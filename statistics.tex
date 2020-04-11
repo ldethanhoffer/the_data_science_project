@@ -1,0 +1,440 @@
+\input{preamble.tex}
+
+\begin{document}
+\title{SUPPORT VECTOR MACHINES}
+
+\maketitle	
+
+
+\noindent\hrulefill
+\tableofcontents
+\noindent\hrulefill
+
+\phantomsection
+\label{section-phantom}
+
+\section{Overview}
+
+\section{Overview}
+\begin{convention}\label{conv:stats_univ-prob}
+Throughout, we will fix a probability space $(U,\r{U},\mu)$
+\end{convention}
+\section{Statistical models}
+\begin{definition}
+Let $(\Theta, \r{O})$ and $(\Omega,\r{F})$ be measurable spaces.\\
+A Markov kernel (denoted $\Theta\implies \Omega$) is a map
+
+\[
+\Sigma: \Omega \times \r{F}\mor \d{R}
+\]
+Where for each $\theta \in \Theta$ the function $\Sigma(\theta,-)$ is a probability measure on $\Omega$ and for each $A \in\r{F}$, the function $\sigma(-,A)$ is $\r{O}$-measurable.\\
+If each probability measure $\Sigma(\theta,-)$ is dominated by the measure $\lambda$ (conv. \ref{conv:stats_univ-prob}), then we write $\Sigma(\theta,-)\define P_\theta$ and call it a \emph{statistical model}
+\end{definition}
+
+\begin{example}
+Let $(\Omega, \r{F})$ be a measurable space and consider the  space  of samples (def. \ref{mb:prob:def:sampling}) given by $S\Omega\define \coprod_{in \in\d{N}}\Omega^i$.\\
+Then we can define a statistical model $\Sigma: S\Omega \implies \Omega$ through
+\[
+\sigma\big((x_1,\ldots, x_n), A\big)=\frac{1}{n}\sum \card\big\{1_{A}(x_i)\big\}
+\]
+This is the descriptive statistical model of $(\Omega, \r{F})$\end{example}
+\subsection{the category Stat$(\Theta)$}
+The collection of statistical models on  the parameter space $\Theta$ naturally forms a category by defining a morphism as follows:
+
+
+
+\subsubsection{the pullback functor}
+
+\begin{definition}
+Let $p:\Theta'\mor \Theta$ be any map (we intuitively think of $p$ as focussing on a  property of $\Theta$).\\
+Let $\Sigma: \Theta\implies \Omega$ be a statistical model.\\
+Then we can define the push-forward of $\Sigma$ along $p$, denoted $p^*\Sigma$ as 
+\[
+p^*\Sigma: \Theta\times \r{F}\mor \d{R}: \big(\omega,A)\fun \Sigma\big(p(\omega), A\big)
+\]
+\end{definition}
+
+
+
+\section{Statistics}
+
+\noindent An important aspect of statistical models is that given a sample $x \in S\Omega$ we'd like to find a way to asociate a parameter $\theta \in \Theta$ (a process known as \emph{estimation}).\\
+To this end, we  recall definition \ref{prob:def.sampling} and introduce an \emph{estimation space} as a set $E$ and define:
+
+\begin{definition}\label{stats:def.estimators}
+An estimator for the statistical model $\Sigma$ is a sequence of functions
+\begin{displaymath}
+\xymatrix{
+S\Omega\ar[r]_{e} & E\ar[r]_p  & \Theta \cup \{\infty\}
+}
+\end{displaymath}
+such that the image of the composition lies in $\Theta$.\\
+Note that for any $\omega \in \Omega$, we immediately obtain a map $RS\Omega\mor \Theta$ from the random sample space given by
+\begin{displaymath}
+\xymatrix{
+S\ar[r]^e\Omega & E\ar[d]^p\\
+RS\ar[u]^{\ev_{\omega}}\ar[r]_{e_R}\Omega & \Theta\cup\{ \infty \}
+}
+\end{displaymath}
+\end{definition}
+
+\section{Bayesian models}
+
+
+\begin{definition}
+Let $(\Theta,\r{O})$ and $(\Omega,\r{F})$ be measurable spaces.
+A Bayesian model is a probability measure $\Pi$ on the measurable space $(\Theta\times \Omega, \r{O}\times\r{F})$
+\end{definition}
+
+\part{statistics}
+
+
+
+If a statistical model is dominated, one can consider the following map
+\[
+\MLE: \Sigma\mor \r{P}(\Omega):x \fun \argsup_\theta f(\theta,x)
+\]
+We call $L \in \Hom(\Sigma,\Omega$ a maximum likelihood estimator if $L(\theta)\in MLE$.
+\section{Bayesian Models}
+
+
+
+An important subset of statistical models are so-called Bayesian models in which one considers extra structure which lifts $(\Theta,\r{O})$ to a probability space itself. Assume we are given a probability measure $P$ on $(\Theta,\r{O})$, then together with the statistical model $P_\r{O}$, one can form the probability $\Pi\define P\rtimes P_\theta$ following theorem \ref{thm:integratemarkovkernel}  and since one can recover $P$ and $P_\theta$ from $\Pi$, it makes sense to define:
+\begin{definition}\label{def:stochasticmodel}
+A stochastic statistical model is a probability measure $\Pi$ on $\Theta\times \Sigma, \r{O}\times \r{S})$ which decomposes into $P\rtimes P_\r{O}$
+\end{definition}
+
+One can go one step further and demand this definition be symmetric:
+
+\begin{definition}\label{def:bayesianmodel}
+A Bayesian model  $\Pi$ is a probability measure on $\Theta\times \Sigma, \r{O}\times \r{S})$ which decomposes into $\mu \rtimes \nu_\r{O}$ and $\nu\rtimes \mu_\r{S}$	
+\end{definition}
+
+Before we go on, we wish to introduce a bit of abuse of notation in two steps. First we denote
+\[
+P(E)\define \mu(E)=\Pi(E\times \Sigma \,\,, P(F)\define \nu(F)=\Pi(\Theta\times F)
+\]
+where the second equalities come from lemma \ref{lemma:inteegratemarkovkernelmarginalprobability}. Following this principle we will always denote $\theta \times \Sigma$ simply by $\theta$ whenever the context is clear.
+The second step of abuse of notation is motivated by the case where the parameter space $\Theta$ is finite.\\
+
+\begin{lemma}
+Assume $\Theta$ and $\Sigma$ are finite spaces and let $\Pi$ be as in \ref{def:bayesianmodel}. Then
+\begin{itemize}
+\item $\mu_\r{S}(\theta,F)=\Pi(\theta\times \Sigma \vert \Theta\times F)\define P(\theta\vert F)$
+\item $P_\r{O}(E,x)=\Pi(E\vert x)$
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+By definition, we have
+\[
+\Pi(\theta \times F)=P(\theta\cup F)=\int_{\theta\times \Sigma} \mu_\r{S}(-,F)d\Pi=\mu_\r{S}(-,F)P(\theta)
+\]
+and vice versa.	
+\end{proof}
+
+Hence we will now denote the kernel $\mu_{S}(\theta , F)$ by $P(\theta \vert F)$ and $P_\r{O}(E,x)$ by $P(E\vert x)$
+
+We call $P(E)$ on $\Theta$ and $P(F)$ on $\Sigma$ the prior and predictive probabilities whereas $P(E\vert x)$ and $P(\theta\vert F)$ are the sampling and posterior kernels respectively.
+
+\begin{example}
+A good example to keep in mind is the following: assume we have a bunch of emails from people. We let $\Theta$ be the set of people, $\Sigma$ the set of words in the emails and $\Pi($Allen, work) be the number of times Allen has written the word 'work' (normalized). In this case the prior  $P$ is the number of words a person has written, the predictive $P$  is the number of people having written a given word. The sampling kernel $P$(work $\vert$ allen) is the probability among the words written by allen, we pick 'work' and the posterior probability $P$(Allen $\vert$ work ) is the probability that the word work was in fact written by Allen
+\end{example}
+ 
+We now assume that the Bayesian model is dominated (meaning that both the posterior and sampling kernel are dominated). 
+In this case it defines two estimators. The $MLE$ given by considering the distribution of kernel $P(- \vert \theta)$, written as $f_{x\vert \theta}$ as well as the maximum a posteriori estimate, given by considering
+\[
+MAP: \Sigma \mor \d{R}: x \fun \argsup_\theta f_{\theta \vert x}(\theta \vert x)
+\] 
+ 
+\section{Bayesian ML Learning} 
+ 
+Based off the Bayesian statistical model we described, one defines a Bayesian Machine learning  model in which one parametrizes \emph{data} by hypothesis.
+ Let $H\subset \Hom((\Theta,\r{O}),(\Sigma,\r{S}))$ be a finite set of \emph{hypothesis} endowed with the discrete $\sigma$-algebra. We consider  $D\subset \Theta\times \Sigma, \r{O}\times \r{S}$ as a space  of data.
+
+\begin{definition}
+A Bayesian ML model is a statistical model on $H\times D$	
+\end{definition}
+
+
+If we assume given a probability $P$ on $H$. Then there is a canonical way to define a Bayesian ML model by letting
+\[
+\Pi(h\times F)\define \mu(h)\delta_{h,F}
+\]
+where $\delta_{h,F}$ if the graph of $h$ lies in $F$ and zero else. We can this the noiseless model with prior $P$.
+
+\begin{lemma}
+Consider the above model. and let $VS_{H,F}$, the version space of $F$ be the set of all $h \in H$ whose graph lies in $F$. Then
+\begin{itemize}
+\item the prior is given by $P(h)$
+\item the sampling kernel is given by $P(E\vert h)=\Pi(F\vert h)=\delta_{h,F}$
+\footnote{recall that we identify $h with h\times D$ and $F$ with $H\times F$ implicitely}
+\item The predictive probability is	given by $P(F)= \mu(VS_H,F)$
+
+\item the posterior kernel is given by $\mu_\r{S}(h,D)=\Pi(h\vert D)=\frac{\delta_{h,F}P(h)}{\mu(VS_{H,F})}$
+\end{itemize}
+\end{lemma}
+
+We will also be interested in Bayesian ML models wich incorporate noise. Here one is not just interested in wanting $\Pi(h\times F)$ to only be nonzero if the graph of $f$ describes the data. Rather, one defines noise on space as a probability and keeps track of that. We are not sure how to formalize this in the the above context forn now.
+
+\section{Bayesian Networks}
+
+\begin{definition}
+Let $(\Omega,\r{A},P)$ be a probability space and $(X_i)_{v \in V}: \Omega\mor \Sigma$ a set of random variables.
+A Bayesian network is an acyclic	 quiver  $\Qvr$ with vertices $v$.\\
+\end{definition}
+Given a bayesian network and a node $i$, the parents of $i$ are all node with an arrow coming in to $i$.
+
+\begin{definition}
+We say that the random variables $X_v$ follow the Bayesian network $\Qvr$ if
+\[
+f_{X_1\wedge \ldots \wedge X_n}=\prod_i f_{X_i \vert \wedge X_{j, \textrm{j parent of i}}}\]
+\end{definition}
+In the case where the quiver consists of a single node $1$ and a single arrow to $2\ldots n$. We say the network is naive, so that
+\[
+P(A_1,\ldots A_n)=P(A_1)\prod_i P(A_i\vert A_1)
+\]
+
+Where we used the definition of the density function of conditioning one random variable wrt to another.
+\section{Naive Bayes}
+
+\begin{definition}
+We say that a Bayesian model $\Theta \times \Sigma$ 	is naive if $P(-\vert \theta)$ is given by a naieve bayes network.
+\end{definition}
+
+
+
+\section{Types of Bayesian Models}
+
+Let $P_\theta$ denote a statistical model. Let $\Qvr$ be a Bayesian quiver.
+
+\begin{definition}
+We say that a Bayesian model is of $P_\theta$-$\Qvr$ type if there exist random variables $X_i:\Omega	\mor \Sigma$ whose distributions lie in the family $P_theta$ who follow the Bayesian quiver $\Qvr$
+\end{definition}
+
+
+
+\subsection{A Naive Bernouilli Model}
+
+We consider the problem of classifiying text messages according to people. We let $\Theta$ be the space of people, let $V$, the vocabulary of words. We order these words to obtain $V^n$ and  let $\Sigma=\{0,1\}^n$ (so that a an element represents a text message containing the words corresponding to places with a 1). We assume the sampling probabilities are bernouilli distributed so that for $\theta \in \Theta$ there exist $\pi_theta \in [0,1]^n$ such that for a vector $x \in \Sigma$:
+\[
+P(x\vert \theta)\define \prod_i (\pi_\theta)_i^{x_i} (1-(\pi_\theta)_i^{(1-x_i)}
+\]
+We assume $\Theta$ has a prior distribution given by $P(\theta)$
+
+\begin{lemma}
+Let $\Pi$ be a finite Bayesian model with Bernouilli sampling distribution
+\[
+MAP(x)=\argmax_\theta \prod_i P(x_i\vert \theta)^{x_1}(1-P(x_i\vert \theta)^{1-x_i})P(\theta)
+\]
+\end{lemma}
+
+
+\begin{proof}
+Let $x \in \Sigma$. Since the model is naive we can assume
+\[
+P(x\cap \theta)=p(\theta)p(x\vert \theta)
+\]	
+so that it suffices to maximize $p(\theta)p(x\vert \theta)$
+Writing the binomial distribution out and taking $\ln$ yields
+\[
+\delta_{x,\sigma}\ln(\pi_{x,\theta})+(1-\delta_{x,\sigma})\ln(1-\pi_{x,\theta})+p(\theta)
+\]
+In order to maximize this, we view this as a function of the variable $\pi_{x,\theta}$ and compute the singular points to get
+\[
+\delta_{x,\sigma}(1-\pi_{x,\theta})-(1-\delta_{x,\sigma})\pi_{x,\theta}=0\iff \delta_{x,\sigma}=\pi_{x,\theta}
+\]
+
+\end{proof}
+
+
+
+\section{Estimators and Parameters}
+
+Arguably statistics is about the following problem: We are given a measurable function
+\[
+X:(\Omega, \r{F}, P)\mor (T,\r{T},\tau)
+\]
+and assume that $\tau$ dominates $P_X$ so that $P_X$ has a density function $f_X: (T,\r{T},\tau) \mor (\d{R},\r{L})$.\\
+We assume given a parameter space
+\[
+(\Theta, \r{G})\times T\mor \d{R}
+\]
+such that for each $\theta \in \Theta$, $f_\theta$ is a density function. and $f_X=f_\theta$ for some $\theta \in \Theta$ (called the parameter).\\
+An \emph{estimator of the random variable $X$} is a sequence of random variables
+\[
+\hat{\theta}_n:(\Omega,\r{F},P)\mor (\Theta, \r{G})
+\] 
+which has \emph{desirable properties.}
+\begin{center}
+The exact meaning of desirable properties explains the ambiguity of statistics. Since statistics is concerned with making conclusions based on a sample size $x_1,\ldots x_n$ of outcomes as opposed to $X$ itself, we shall only concern ourselves with definitions of this type
+\end{center}
+ 
+ 
+\subsection{Consistent Estimators}
+
+\begin{definition}
+An estimator $\hat{\theta}_n$ is consistent if it converges in probability to $\theta$ $\hat{\theta_n}\stackrel{P}{\mor} \theta$. I.e. for any choice $\epsilon$
+\[
+P(\vert \theta_n-\theta\vert <\epsilon)\stackrel{n\to \infty}{\mor} 1
+\]
+\end{definition}
+
+we have the following alternate characterization of constitency:
+
+\begin{lemma}
+The following are equivalent:
+\begin{itemize}
+\item the estimator $\hat{\theta_n}$ is consistent
+\item $E(\theta_n)=\theta$ and $\Var[\theta_n]=0$	
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+	
+\end{proof}
+ 
+ 
+\section{Maximum Likelihood Estimation}
+Let $(\Theta, \r{O})\Longrightarrow (\Omega, \r{F})$ be a statistical model. Taking associated density functions yields
+\[
+\Theta\times \Omega \mor \d{R}:(\theta,x)\fun f_\theta(x)
+\]
+Where $F_\theta$ is the density of the distribution $\theta$. We now assume given a set of points $(x_1,\ldots x_n)$.\\ The purpose of maximum likelihood estimation is to pick the parameter $\theta$ such that the \emph{'likelihood'} of the outcomes $x_i$ is maximized. More precisely, we consider the associated statistical model $(\Theta,\r{O})\Longrightarrow (\Omega^n,\r{F}^n)$, with associated density functions
+\[
+\Theta\times \Omega^n\mor \d{R}:(\theta,x_1\ldots x_n)\fun \prod_i f_\theta(x_i)
+\]
+
+
+Then the maximum likelihood is the function $\hat{\theta}:\Omega^n\mor \Theta$ given by
+\[
+\hat{\theta}(x_1\ldots x_n)=\max_{\theta\in \Theta} \prod_i f_\theta(x_i)
+\]
+whenever this maximum exists. For technical reasons, we sometimes compute the maximum  log-likelihood instead
+\[
+\max_\theta \sum_i \ln f_\theta(x_i)
+\]
+
+\begin{example} (a biased coin)
+Let $\Omega\define\{H,T\}\mor\{0,1\}$ be the random variable associated to throwing a coin in the air with $P$(heads)$=p$. Assume we repeat the experiment $n$ times to obtain the random variable. And let $X$ be the number of heads. Then $X$ is binomially distributed with success $p$. assume that after performing the experiment $X$, we obtain the number $i$ of heads. which $p$ yields the maximum likelihood?\\
+Well, $X$ is binomially distributed so that
+\[
+\ln f_p(k)=\ln(\binom{n}{k}p^k(1-p)^{n-k})=\ln\binom{n}{k}+k\ln(p)+(n-k)\ln(1-p) 
+\]
+setting the derivative with respect to $p$ to $0$ yields $p=\frac{n}{k}$ so that given an outcome of $i$ heads, $p=\frac{i}{n}$ yields the highest likelihood
+\end{example}
+
+\begin{example}
+Another example comes from logistical regression	
+\end{example}
+
+\subsection{Gauss' Principle} the techniaue of MLE can be used to motivate the normal (or Gaussian) distribution.
+\begin{definition}
+we say that a probability on $\d{R}$ is normally distributed if it is dominated by the Lebuesgue measure with density function
+\[
+\frac{1}{\sqrt{2\pi}}e^{\frac{-x^2}{2}}
+\]
+Or more generally after the change of variable $x\fun \frac{x-\mu}{\sigma}$
+\[
+\frac{1}{\sqrt{2\pi}}e^{\frac{-\frac{(x-\mu)}{\sigma}^2}{2}}
+\]
+\end{definition}
+\begin{lemma}
+if $X$ is normally distributed, then
+\begin{itemize}
+\item $X[X]=\mu$
+\item $S[X]=\sigma$	
+\end{itemize}
+
+\end{lemma}
+
+One interesting characterization of the normal distribution is that it is \begin{center}
+the sole distribution whose MLE always coincides with the sample mean\end{center}
+To give a more detailed explanation of this sentence, we start with the following lemma:
+\begin{lemma}
+Let
+\[
+f:\d{R}\times \d{R}\times \d{R}\mor \d{R}:(\mu,\sigma,x)\fun \frac{1}{\sqrt{2\pi}}e^{\frac{-\frac{(x-\mu)}{\sigma}^2}{2}}
+\]	
+Then the MLE associated to the sample $x_1\ldots x_n$ is
+\[
+\hat{\mu}=\sum \frac{x_i}{n}\textrm{ and }\hat{\sigma}=\big(\frac{1}{n}\sum(x_i-\hat{\mu})^2)^\frac{1}{2}
+\]
+\end{lemma}
+\begin{proof}
+This is a straightforward exercise.	
+\end{proof}
+\section{Estimators}
+
+\begin{definition}
+Let $X:(\Omega,\r{A},P)\mor (T,\r{T})$ be a random variable. and $(x_1,\ldots , x_n)$ a sample (set of outcomes) An estimator consists of a daigram
+\begin{displaymath}
+\xymatrix{
+&  \Hom(\Omega,\r{A},P), (T,\r{T}))\ar[dr]_\mu\\
+\Theta\ar[ur]_h & & \d{R}
+}	
+\end{displaymath}
+such that $\Theta\mor \d{R}$ attains a maximum for a certain function $h_\theta$, the estimation
+\end{definition}
+
+
+There are two important classes of estimation:
+
+\subsection{Maximum likelihood estimation}
+ In this case, we suppose given $x_1,\dots x_n$ outcomes of the random variable $X$. Given the map $\Theta \mor \Hom(\Omega,\r{A},P), (T,\r{T}))$, for $h_\theta \in \Theta$, we let \[\mu(h_\theta)=f_{h_\theta^n}(x_1,\ldots x_n)\]
+ This number is the likelihood of $(x_1,\ldots x_n)$ assuming $\theta$
+ 
+ \subsection{Maximum A Posteriori Estimate}
+ We assume that $\Theta,\r{A},P)$ now has the structure of a probability space and let $ d$ given outcomes $x_1,\ldots x_n$ as well as a random variable $\Theta\mor \d{R}$
+\section{on Classifiers}
+
+We start by definining a predictor as follows:
+\begin{definition}
+For a probability space $\Omega$ and a measurable space $\r{O}$. A cost is a function
+\[
+C:\Hom(\Omega,\r{O}) \mor \Hom(\Omega,\d{R})
+\]	
+Let $f\le g \iff \c(f)\le \c(g)$. This defines a pseudo-order. We sat that $f$ is a predictors if its equivalence class $\bar{f}$ is maximal.
+\end{definition}
+
+Usually one builds from the data of a training set, which is a map $\tau: \r{T}\mor \r{O}$ where $\r{T}\subset \Omega$
+
+\section{Naive Bayes}
+
+\begin{definition}
+We say that a Bayesian model $\Theta \times \Sigma$ 	is naive if $P(-\vert \theta)$ is given by a naieve bayes network.
+\end{definition}
+
+
+
+\section{the Naive Bayes Classifier}
+
+
+In this section, we consider the following classification problem:
+assume we are given a probability space partitioned into a finite set of outcomes (which we call authors here) $O_k\subset \r{O}$. We are given a set of words $D$ and let $\Omega=D^n$ assume given a feature set $\r{F}\subset \Omega\def \Omega$ (these are usually interpreted as bits of text). We now have a function $\tau:\r{F}\mor \r{O}$ which maps each text to its author. By abuse of notation for an author, we let $P(O_k)=P(\tau^{-1}(O_k))$ and for a word $\omega \in \Omega$, we let $P(\omega)\define P(\cup_i\pi^{-1}_i(\omega))$ (where $\pi_k$ projects a text to its $k$-th word)
+Then we define the cost as
+\[
+\Hom(\Omega,\r{O})\mor \Hom(\Omega,\d{R}):f\mor P(f(\omega)\cap \cap_i \pi_i(\omega))
+\]
+
+We say that the problem is naive if the following condition is met for a text $omega \in \Omega$ consisting of words $(\omega_1,\ldots \omega_n)$, we have
+\[
+P(\omega_1\vert \omega_2\ldots \omega_n)=P(\omega_1)
+\] 
+Then the predictor associated to this problem is simply given by
+
+\[
+NB(\omega)= \max_k P(O_k\cap \pi_1(\omega)\cap \ldots \pi_n(\omega))
+\]
+It can be easily checked assuming naivity that
+\[
+NB(\omega)=\max_k \bigg(P(\pi_1(\omega)\vert O_1)\cdot \ldots\cdot P(\pi_n(\omega)\vert O_k)P(O_k)\bigg)
+\]
+
+\begin{example}
+Assume we have a set of emails from John and Sarah (split 50/50). Those emails contain the words brown fox jumps in the following way: for john we have $(0.1,0.3,0.1)$ and Sarah $(0.2,0.5,0.1)$ We wish to know who wrote the word Brown fox. 
+Assume naivity (wish is realistic in this scenario), we have 
+$NB_{John}=0,1\cdot 0.3\cdots 0.5$ whereas $NB_{Sarah} =0.2\cdot 0.5\dots 0.5$. So Sarah wrote it. 	
+\end{example}
+
+\end{document}
