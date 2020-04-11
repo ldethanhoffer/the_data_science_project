@@ -1,0 +1,126 @@
+\input{preamble.tex}
+
+\begin{document}
+\title{PROBABILITY}
+
+\maketitle	
+
+
+\noindent\hrulefill
+\tableofcontents
+\noindent\hrulefill
+
+\phantomsection
+\label{section-phantom}
+
+\section{Overview}
+
+
+\section{the General theory}
+
+\subsection{Measurable spaces}
+\begin{definition}
+Let $\Omega$ be a set.\\
+A $\sigma$-algebra on $\Omega$ is a collection $\r{F}\subset \pr{P}(\Omega)$ of subsets of $\Omega$ such that
+\begin{itemize}
+\item $\Omega \in \r{F}$
+\item $\forall A, B \in\r{F}: A\setminus B \in\r{F}$
+\item if $A_i\in\r{F},\,\,\forall \,i \in \d{N}$ then $\bigcup_{i \in \d{N}} A_i \in \r{F}$
+\end{itemize}
+A measurable space consists of a couple $\big(\Omega,\r{F}\big)$ where $\r{F}$ is a $\sigma$-algebra on $\Omega$
+\end{definition}
+
+\subsection{Probability spaces}
+\begin{definition}
+Let $(\Omega,\r{F})$ be a measurable space.\\
+A measure on $(\Omega,\r{F})$ is a map $\lambda:\r{F}\mor \d{R}_+$ such that 
+\begin{itemize}
+\item $\lambda\big(\varnothing) = 0$
+\item $\lambda\big(\bigcup A_i\big) = \sum_{i \in \d{N}} \lambda\big(A_i\big)$
+\end{itemize}
+We say that $\lambda$ is a \emph{probability} if $\lambda(\Omega)=1$
+We call the resulting triple a measure (resp. probabbility) space
+
+
+\end{definition}
+
+\subsection{Random variables}
+\begin{definition}
+Let $(\Omega, \r{U}, \lambda)$ be a probability space and $(\Omega, \r{F})$ a measurable space. A random variable is a function
+\[
+X: U\mor \Omega
+\]
+such that $X^*(\r{F})\subset \r{U}$
+\end{definition}
+\begin{lemma}
+Let $X: (\Omega, \r{F}, P)\mor (\Omega, \r{F})$ be a random variable. Then the function
+\[
+X_*P: \r{F}\mor \d{R}:  A\fun P(X^{-1}(A)) 
+\]
+defines a probability.
+\end{lemma}
+\begin{proof}
+This is a routine exercise
+\end{proof}
+\begin{definition}
+The probability $X_*P$ defined above is the \emph{pushforward of $P$ along $A$}.\\
+We write $X\sim Q$ if $X_*P =Q$
+\end{definition}
+\section{a Taxonomy of probabilities}
+\subsection{Discrete probabilities}
+\begin{definition}
+We say that a probability $P$ on $(\Omega,\r{F})$ is discrete if there exists a sequence $(x_i)_{i \in \d{N}}$ such that
+\[
+P\big(\Omega\setminus\{(x_i)_{i \in \d{N}}\}\big)=0
+\]
+\end{definition}
+Note that in particular any probability on a countable set is discrete
+\subsubsection{Bernouilli}
+\begin{definition}
+Let $\Omega\define \d{Z}_2$ and $\pr{F}=\pr{P}(\Omega)$. Then any probabilityon $\Omega$ is called Bernouilli.\\
+If $p=P(1)$, then the density is given by
+\[
+f_P(x) = p^x(1-p)^{1-x}
+\]
+\end{definition}
+
+\section{Sampling}
+
+\begin{convention}\label{conv:prob_univ}
+We will fix a probability space $(\textrm{U}, \r{U},\lambda)$ and throughout any random variable $X$ on $(\Omega,\r{F})$ will always have this space as its domain.
+\end{convention}
+
+\begin{definition}\label{prob:def:sampling}
+Let $(\Omega, \r{F})$ be a measurable space.\\
+The \emph{sample space} of $\Omega$ is the set 
+\[
+\sample{\Omega}\define \coprod_{i \in \d{N}}\Omega^i
+\]
+endowed with the canonical $\sigma$-algebra $\coprod_{i \in \d{N}} \r{F}$.\\
+The \emph{drawing space} is the subspace of $\sample{\Omega}$ defined as:
+\[
+\draw{\Omega} = \big\{ (w_1,\ldots w_n) \in \sample{\Omega} \vert \, \omega_i\neq \omega_j \big\}
+\]
+again, endowed with the canonical $\sigma$-algebra.\\
+The space of random samples is defined as:
+\[
+RS\Omega\define  \coprod_{i \in \d{N}} \bigg\{(X_1,\ldots X_n)\vert \, X_i \textrm{ i.i.d }\}
+\] 
+We say that $(x_1\ldots x_n)$ is sampled from $P$ if it lies in the image of the canonical map
+\[
+\ev: U\times RS\Omega\mor S\Omega: \bigg(u, \big(X_1,\ldots X_n\big)\bigg)\fun \bigg(X_1(u),\ldots X_n(u)\bigg)
+\]
+and $X_i\sim P$.
+Finally, we may need to restrict the choice of probabilities in the future. To this end, assume $\big(P_\theta\big)_{\theta \in \Theta}$ is a collection of probabilities on $(\Omega,\r{F})$. Then we define
+\[
+\rsample_\theta \Omega \define \bigg\{( X_1,\ldots X_n) \in \rsample\Omega\,\,\vert \,\, \exists \theta: X_i\sim P_\theta \bigg\}
+\]
+\end{definition}
+
+
+\begin{remark}\label{rem:prob_sampling-map}
+The above map $\ev: \Omega\times RS\Omega\mor S\Omega: $
+will be referred to as the sampling map
+\end{remark}
+
+\end{document}
