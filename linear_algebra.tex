@@ -1,0 +1,317 @@
+\input{preamble.tex}
+
+\begin{document}
+\title{\textbf{MATHVSMACHINE: THE BOOK}}
+\author{LOUIS DE THANHOFFER DE VOLCSEY}
+\date{}
+\maketitle	
+
+
+\noindent\hrulefill
+\tableofcontents{}
+\noindent\hrulefill
+
+
+\part{Vector spaces}
+\chapter{Linear Algebra}
+\section{the Normal equation}
+
+
+\noindent In this section, we'll refresh the reader on projections onto images of linear maps: The starting point of this construction is the following lemma:
+\begin{lemma}\label{lem:mindist-perp}
+	Let $W\subset V$ be a subspace of the inner product space $V$. Let $v \in V$ and $u \in W$.\\
+	Then the  following are equivalent:
+	\begin{enumerate}
+		\item $(v-u) \perp W$
+		\item $	\argmin_{w \in W}\norm{v-w} =u$	
+	\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+	Let $w \in W$.\\
+	Assuming $u \in W$ satisfies the first condition, we have $v-u \perp u-w$ and by the Pythagorean theorem, we have:
+	\[
+	\norm{v-w}^2 = \norm{v-u}^2+\norm{u-w}^2 \ge \norm{v-u}^2
+	\]
+	Proving the second condition.\\ 
+	Conversely, we assume $u\in W$ satisfies the second condition and apply the following trick:\\
+	Consider the function:
+	\[
+	\phi:\d{R}\mor \d{R}: t \fun \norm{v-u+tw}^2
+	\]	
+	Since $\norm{v-u}^2$ is minimal, $\phi$ has a minimum at $t=0$. Moreover, $\phi$ is differentiable so that $\phi'(0)=0$. It's also easy to see that
+	\[
+	\phi(t) = \norm{v-u}^2 +2\cdot t \bl{v-u}{w}+t^2\norm{w}^2
+	\]
+	Hence $0=\phi'(0) = 2 \bl{v-u}{w}$, and $v-u\perp w$ as required
+\end{proof}
+
+\begin{lemma}\label{lem:projection}
+	Let $W \subset V$ be a  subspace of a finite-dimensional inner product space. Then the map
+	\[
+	\pi: V\mor W: v \fun \argmin_{w \in W} \norm{v- w}
+	\]
+	is well defined
+\end{lemma}
+
+\begin{proof}
+	By the above lemma we need to show that for any $v \in V$, there exists a unique $\pi(v) \in W$ such that $v-\pi(v) \perp W$. To this end, we look at the following map $ f \in W^*$
+	\[
+	f: W \mor \d{R}: w \fun \bl{v}{w}
+	\]
+	Since $W^*$ is in turn an inner product space, $f$ can be written in the form $\bl{\pi(v)}{-}$ for some unique $\pi(v) \in W$. The result now follows
+\end{proof}
+
+The lemma above motivates the following definition:
+
+\begin{definition}\label{def:projection}
+	Let $W\subset V$ be a subspace of a finite dimensional inner product space. Then the unique map $\pi: V\mor W$ defined by 
+	\[
+	\pi(v) \define \argmin_{w \in W}\norm{v-w}
+	\]
+	is \emph{the projection of $V$ onto $W$}
+\end{definition}
+\begin{corollary}\label{lem:projcoincide}
+	Let $W=\im(f)\ds \im(f)^{\perp}$ and $\pi_{\im(f)}:W\mor \im(f)$ be the canonical projection. Then $\pi_{\im(f)}$ coincides with the projection onto the subspace $\im(f)\subset W$ in the sense of Definition \ref{def:projection}
+\end{corollary}
+
+\begin{proof}
+This follows immediately from \ref{lem:mindist-perp}
+\end{proof}
+\noindent Next, we consider a linear map $f \in \Hom_\k(U,V)$ and let $W$ be the subspace $\im(f)$. One can give a more explicit description of the projection $\pi: V\mor W$:
+
+\begin{lemma}\label{lem:normaleq}
+	Let $f \in \Hom(U,V)$ and and $v \in V$ Then the following are equivalent:
+	\begin{enumerate}
+		\item	$f(u)$ is the projection of $v$ onto the subspace $\im(f)\subset V$
+		\item The vector $u \in U$ satisfies $(f^* \circ f)(u) = f^*(v)$	
+	\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+	$f(u)$ is the projection of $v$ onto $\im(f)$ if and only if $\bl{v-f(u)}{f(u')}$ for any $u' \in U$ by Lemma \ref{lem:mindist-perp}. Now,
+	\[
+	\bl{v-f(u)}{f(u')}=\bl{f^*(v)-f^*f(u)}{u'}
+	\]
+	This last expression is $0$ if and only if $f^*(v)-f^*f(u)=0$ since the inner product is nondegenerate
+\end{proof}
+
+The above lemma justifies the following definition:
+
+\begin{definition}
+	Let $f \in \Hom(V,W)$ and $w \in W$.\\ 
+	We say that $v \in V$ satisfies the normal equation if and only if 
+	\[
+	(f^* \circ f)(v) = f^* w
+	\]
+\end{definition}
+In this terminology, we can restate lemma \ref{lem:normaleq} as follows:
+\begin{lemma}
+	Let $f \in \Hom(V,W)$ and $w \in W$ Then the following are equivalent:
+	\begin{enumerate}
+		\item $w =\argmin_{u \in V}\vert \vert w-f(u)\vert \vert$
+		\item $v$ is a solution to the normal equation $(f^* \circ f)(v) = f^* w$
+	\end{enumerate}
+\end{lemma}
+\noindent It is finding the solutions to this equation that we are interested in. It turns out that one can give an explicit description of them using the so-called \emph{Moore-Penrose pseudo-inverse}. Since this construction seems to be a little less well covered in standard linear algebra literature, we'll discuss in detail below: 
+\section{the (Moore-Penrose) Pseudo-inverse}
+
+In this section, we will let $V, W$ be finite-dimensional vector spaces and $f \in \Hom_\d{R}(V,W)$.\\ It is well-known that $f$ does not have an inverse in general. There is however a natural generalization of the notion of inverse which can be defined for \emph{any} map: a \emph{pseudo-inverse}. More precisely, if $f$ either has  a nonzero kernel or if the image of $f$ is not the whole of $W$, then the inverse of $f$ will not exist. One natural way to remediate this issue is to consider complements for both subspaces and write 
+\[V\define \ker(f)\ds U_V \textrm{ and } W\define \im(f)\ds U_W\]
+
+It's easy to see that restricting $f$ to appropriate subspaces now does produce an invertible map as follows:
+
+\begin{lemma}
+	the map $f: U_V\mor \im(f)$ is an isomorphism.
+\end{lemma}
+\noindent We'll denote the inverse of $f$ on $U_V$ by $f^\sharp:\im(f)\mor U_V$. A pseudo-inverse is now the natural lift of $f^\sharp$ to the whole of $W$:
+
+
+\begin{lemma}\label{lem:pseudo-inverse}
+	There exists a unique map $f^\sharp:W\mor U_V$ making the following diagram commute:
+	\begin{displaymath}
+	\xymatrix{
+	W\ar[d]_{\pi_{\im(f)}}\ar[drr]^{f^\sharp}\\
+	\im(f)\ar[rr]_{f^\sharp} && U_V
+	}
+	\end{displaymath}
+\end{lemma}
+
+\begin{proof}
+The commutativity of the diagram means that for $u \in U_V$, we have
+\[
+	f^\sharp(w) \define u\iff f^\sharp(\pi_{\im(f)}(w)) =u\iff \pi_{\im(f)}(w) =f(u)
+\]
+Where the second equivalence follows from the fact that $f^\sharp$ is the inver of $f$ on $U_V$.\\
+The claim will thus follow if we show that the above assignment is indeed a well-defined linear map. To this end assume that $u,u' \in U_V$ satisfy $f(u')=\pi_{\im(f)}(w)=f(u)$.\\ Then $u-u' \in \ker(f)$, hence $u-u' \in \ker(f)\cap U_V$ in particular. Now since $\ker(f)\ds U_V =V$, we have  $u-u'=0$, so that $u=u'$, showing the well-definedness.\\ 
+We leave the linearity to the reader.
+\end{proof}
+It will be helpful to note that the map $f^\sharp\in \Hom(W,V)$ can also be characterized by $\im(f^\sharp)\subset U_V$ and $f\circ f^\sharp =\pi_{\im(f)}$.\\
+To give the map $f^\sharp$ a name, we first let $\Lambda(f)$ denote the set
+\[
+\Lambda(f)\define \{(U_V,U_W)\vert \, \ker(f)\ds U_V=V \textrm{ and } \im(f)\ds U_W =W \}
+\]
+and conclude from Lemma \ref{lem:pseudo-inverse} that there is a assignment:
+\[
+\Phi: \Lambda(f)\mor \Hom_\d{R}(W,V):(U_V,U_W)\fun f^\sharp
+\]
+where $f^\sharp \in \Hom_{\d{R}}(W,V)$ is the unique map satisfying
+\[
+f \circ f^\sharp = \pi_{\im(f)} \textrm{ and } \im(f^\sharp)\subset U_V
+\]
+Let's denote the image of $\Phi$ by $\Pi(f)$. Summarizing the discussion, we make the following:
+\begin{definition}\label{def:ps}
+Let $(U_V,U_W) \in \Lambda(f)$. Then the pseudo-inverse of $(U_V,U_W,f)$ is the map $\Phi(f)$.\\
+We say that $g\in \Hom_{\d{R}}(W,V)$ is a pseudo-inverse to $f$ if $g\in \Pi(f)$
+\end{definition}
+
+We can give a slightly different description of pseudo-inverses by describing them on the 2 components in the decomposition $\im(f)\ds U_W =W$:
+
+
+\begin{lemma}\label{lem:pschar2}
+Let $(U_V,U_W)$ in $\Lambda(f)$. Then the following are equivalent:
+\begin{enumerate}
+	\item $f^\sharp$ is the pseudo-inverse to $(U_V,U_W,f)$
+	\item $f^\sharp\arrowvert_{\im(f)}$ is the inverse to $f:U_V\mor \im(f)$ and $f^\sharp\arrowvert_{U_W}=0$
+\end{enumerate}
+
+\end{lemma}
+
+\begin{proof}
+	Since the pseudo=inverse to $(U_V,U_W,f)$ is unique, it suffices to show that the pseudo-inverse indeed satisfies the conditions of $(2)$. The fact that $f^\sharp\arrowvert_{\im(f)}$ is the inverse of $f\arrowvert_{U_V}$ follows from 
+	\[
+	(f\circ f^\sharp) \arrowvert_{\im(f)}=\big(\pi_{\im(f)}\big)\arrowvert_{\im(f)}=\Id\arrowvert_{\im(f)}
+\] 
+Moreover, if $w \in U_W$, then $\pi_{\im(f)}(w)=0$ since $\im(f)\ds U_W$. Hence $f^\sharp(w)=f^\sharp(\pi_{\im(f)}(w))=0$ by Lemma \ref{lem:pseudo-inverse}
+\end{proof}
+Our next order of business is to give an explicit description of the set $\Pi(f)$ of pseudo-inverses to $f$. We begin by showing that we can describe the complements $U_V$ and $U_W$ solely by using the maps $f$ and $f^\sharp$:
+\begin{lemma}\label{lem:psim-ker}
+	Let $f^\sharp$ be the pseudo-inverse to $(U_V,U_W,f)$. Then $U_V=\im(f^\sharp)$ and $U_W=\ker(f^\sharp)$
+\end{lemma}
+
+\begin{proof}
+	We have $\im(f^\sharp)\subset U_V$ by Definition \ref{def:ps} . Moreover, $f^\sharp$ is a composition of surjections and hence itself surjective, proving the first claim.\\
+	To prove the second claim, note that the second condition of Lemma \ref{lem:pschar2} immediately implies that $U_W\subset \ker(f^\sharp)$. We can also show the other inclusion by assuming that $w\in W$ satisfies $f^\sharp(w)=0$, in which case $\pi_{\im(f)}(w)=f(f^\sharp(w))=f(0)=0$, implying that $w$ lies in the component $U_W$ of the decomposition $\im(f)\ds U_W=W$ as required
+\end{proof}
+
+Taking the above lemma one step further allows us to describe the set $\Pi(f)$ of pseudo-inverses as promised:
+
+\begin{lemma}\label{lem:charpi}
+	Let $f \in \Hom(V,W)$. Then the following are equivalent:
+	\begin{enumerate}
+	\item $g \in \Pi(f)$
+	\item $(f\circ g)\arrowvert_{\im(f)}=\Id$ and $(g\circ f)\arrowvert_{\im(g)}=\Id$ 
+	\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+	Let $g$ be a pseudo-inverse to $f$ and define $U_V\define\im(g)$ and $U_W\define\ker(f)$. Then Lemma \ref{lem:psim-ker} shows that $g$ is in fact the pseudo-inverse to the triple $\big(U_V,U_W,f\big)$. Now, since $g\arrowvert_{\im_(f)}$ is the inverse to $f\arrowvert_{U_V}$ by Lemma \ref{lem:pschar2}, we have $(f \circ g)\arrowvert_{\im(f)}=\Id$ and $(g \circ f)\arrowvert_{\im(g)}=(g \circ f)\arrowvert_{U_V}=\Id$.\\
+	Conversely, assume that $g$ satisfies the conditions in (2).\\
+	We begin by showing that $\big(\im(g),\ker(g)\big) \in \Lambda(f)$. Let's show  that $\im(f)\ds \ker(g)=W$ by way of example. Indeed, first note that $\im(f)\cap \ker(g)=0$, as any $w$ in this intersection must satisfy $w=(f\circ g)(w)=f(0)=0$. Moreover, if we write $w=\big(w-f( g(w))\big)+f ( g(w)\big)$, we see that trivially $f(g(w))\in \im (f)$ and \[
+	g(w-f(g(w)))=g(w)-(g(f(g(w))=g(w)-g(w)=0
+	\]
+	so that $\big(w-f(g(w))\big) \in \ker(g)$. This indeed shows that $\im(f)\ds \ker(g)=W$. The proof of $\im(g)\ds \ker(f)=V$ is completely analogous, allowing us to conclude that $(\im(g),\ker(g))\in \Lambda(f)$.\\
+	It now remains to show that $g$ is indeed a pseudo-inverse to the triple $(\im(g),\ker(f),f)$. By Lemma \ref{lem:pschar2}, it suffices to show that $g\arrowvert_{\im(f)}$ is the inverse to $f\arrowvert_{\im(g)}$ and that $g\arrowvert_{\ker(g)}=0$. The first claim follows immediately from the fact that $g$ is a left inverse to $f:\im(g)\mor W$ and the second claim is trivial.
+\end{proof}
+
+\noindent In order to summarize the previous 2 lemmas, we introduce the following assignment, which is well-defined by Lemma \ref{lem:psim-ker}
+
+\[
+\Psi: \Pi(f)\mor \Lambda(f): g\fun \big(\im(g),\ker(g)\big)
+\]
+We now have:
+\begin{lemma}\label{lem:psinverses}
+	Let $f \in \Hom(V,W)$. Then:
+	\begin{itemize}
+		\item 
+		$\Pi(f)=\big\{ g \in \Hom(W,V)\,\,\big\vert\,\, (f\circ g)\arrowvert_{\im(f)}=\Id$ \textrm{ and } $(g\circ f)\arrowvert_{\im(g)}=\Id \big\} $
+		\item The assignments $\Phi$ and $\Psi$ define 1:1 correspondences between $\Lambda(f)$ and $\Pi(f)$
+	\end{itemize}
+\end{lemma}
+
+
+\begin{proof}
+	The first claim simply restates Lemma \ref{lem:charpi}. To prove the second, we note that $\Psi\circ \Phi=\Id$  by Lemma \ref{lem:psim-ker}. Moreover, $\Phi$ is surjective by definition, implying that $\Phi\circ \Psi =\Id$ as well
+\end{proof}
+
+
+
+\noindent We finish our discussion of pseudo-inverses by discussing a special choice of pseudo-inverse in $\Pi(f)$ that one can make if the vector spaces $V$ and $W$ are equipped with inner products. Indeed, recall the following standard result:
+
+\begin{lemma}
+ Let $U \subset V$ be a subspace of a finite dimensional inner product space. Then $U\ds U^{\perp}=V$
+\end{lemma}
+
+This leads us to the following Definition:
+\begin{definition}\label{def:mpinverse}
+Let $V,W$ be finite-dimensional inner product spaces and let $f \in \Hom_\d{R}(V,W)$. Then the \emph{Moore-Penrose pseudo-inverse} is the pseudo-inverse to the triple $(\ker(f)^\perp,\im(f)^\perp,f)$.\\ We will denote it by $f^+$
+\end{definition}
+
+\noindent It turns out that we can give a very satisfying description of Moore-Penrose pseudo-inverses:
+
+\begin{lemma}\label{lem:mppschar}
+	Let $V, W$ be finite-dimensional inner product spaces and $f \in \Hom(V,W)$. Then the following are equivalent:
+	\begin{enumerate}
+		\item $g$ is the Moore-Penrose pseudo-inverse $f^+$ to $f$
+		\item $g$ is a pseudo-inverse to $f$ and $g\circ f$ and $f \circ g$ are self-adjoint linear maps
+		\item $f$ and $g$ satisfy $f\circ g \circ f=f$, $g\circ f\circ g =g$,  $(g\circ f)^*=g\circ f$ and $(f\circ g)^* =f\circ g$
+	\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+	The equivalence $(2)\iff (3)$ is simply a restatement of Lemma \ref{lem:psinverses}.\\
+	We now prove $(2)\implies (1)$:\\
+	Assume that $g$ is a pseudo-inverse to $f$ and that $g\circ f$ and $f \circ g$ are both self-adjoint. then Lemma \ref{lem:psim-ker} implies that $g$ is the pseudo-inverse to the triple $\big(\im(g),\ker(f),f\big)$. The claim will thus follow if we show that $\im(g)=\ker(f)^\perp$ and $\ker(g)=\im(f)^\perp$. By way of example, we will prove the former equality: First note that since $\im(g)\ds \ker(f)=V$, it suffices to show that $\im(g)\perp \ker(f)$. Indeed, for $w \in W$ and $v \in \ker(f)$, we have: 
+	\[
+	\bl{v}{g(w)}=\bl{v}{(g\circ f)(g(w))}=\bl{(g\circ f)^*(v)}{g(w)}=\bl{(g\circ f)(v)}{g(w)}=\bl{g(0)}{g(w)}=0
+	\]
+	The proof of $\ker(g)=\im(f)^\perp$ is analogous.\\
+	Finally, we show $(1)\implies (2)$:\\
+	Assume that $g$ is the Moore Penrose pseudo-inverse to $f$. Ie $g$ is the  pseudo-inverse to the triple $(\ker(f)^\perp,\im(f)^\perp,f)$. We will show that $(f\circ g)$ is self-adjoint and leave the other claim to the reader. To this end, let $v,v' \in V$. Then
+	\begin{align*}
+	\bl{v}{g(f(v'))}&=\bigg\langle v-g(f(v))+g(f(v)), g(f(v'))-v'+v'\bigg\rangle\\
+	&= \bigg\langle v-g(f(v)), g(f(v'))\bigg\rangle+\bigg\langle g(f(v)),g(f(v'))-v'\bigg\rangle+\bigg\langle g(f(v)), v'\bigg\rangle
+	\end{align*}
+	Now, since $f\circ g\circ f=f$, we conclude that $v-g(f(v))$ and $g(f(v'))-v'$ lie in $\ker(f)$. Moreover, since $\ker(f)=\im(g)^\perp$, we conclude that 
+	\[
+	\bl{v-g(f(v))}{g(f(v'))}=\bl{g(f(v))}{g(f(v'))-v'}=0
+	\]
+	So that 
+	\[
+	\bl{v}{g(f(v'))}=\bl{g(f(v))}{v'}
+	\] implying that $f\circ g=(f\circ g)^*$. The equality $g\circ f = (g\circ f)^*$ is completely analogous.
+\end{proof}
+
+As mentioned in the introduction of this section, our main motivation for studying the Moore-Penrose pseudo-inverse, is to provide a description of the projection of a vector onto the image of a linear map. We begin with the following preparatory lemma:
+
+
+
+\begin{lemma}\label{lem:proj=mppsinverse}
+	Let $V,W$ be finite-dimensional inner product spaces and  $f \in \Hom(V,W)$. Let $v \in V$ and $w\in W$. Finally denote the Moore-Penrose inverse of $f$ by $f^+$. Then the following are equivalent:
+	\begin{enumerate}
+		\item $f(v)$ is the projection of $w$ onto the subspace $\im(f)$
+		\item $v$ satisfies the normal equation $(f^*\circ f)(v)=f^*(w)$
+		\item $v$ lies in the affine subspace $f^+(w) + \ker(f)$
+	\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+	The equivalence of $(1)\iff (2)$ is simply a restatement of Lemma \ref{lem:normaleq}.\\
+	To show the equivalence of $(1)\iff (3)$, we first note that $f(f^+w))=\pi_{\im(f)}$, where $\pi_{im(f)}$ is the projection onto the subspace $\im(f)\subset W$ by Lemma \ref{lem:projcoincide}. This shows that the vector $f^+(w) \in V$ indeed satisfies the condition $(1)$. Next, assume (1), so that $v \in V$ satisfies $f(v)=\pi_{\im(f)}(v)$ and write $v= f^+(w)+v'$. Then\[
+	f(v)=\pi_{\im(f)(w)}\iff f(f^+(w)+v')=\pi_{\im(f)}(w)\iff \pi_{\im(f)}(w)+f(v')=\pi_{\im(f)}(w)\iff v'\in \ker(f)
+	\]
+	This proves the claim
+\end{proof}
+
+This lemma has an interesting corollary which allows us to write the Moore-Penrose even more explicitly which will play an important role later on:
+
+\begin{corollary}\label{cor:psinverse-injective}
+Let $V$ be a finite dimensional vector space and $W$ a finite dimensional inner product space. Let $f \in \Hom(V,W)$ be injective and choose \emph{any} inner product on $V$. Then
+\[
+f^+ = (f^*\circ f)^{-1}\circ f^*
+\] 
+\end{corollary}
+
+\begin{proof}
+	Since $f$ is injective (so that $\ker(f)=0$), $f^+$ is the pseudo-inverse to the triple $(V,\im(f)^{\perp},f)$ by Definition \ref{def:mpinverse}. It follows immediately that this condition is independent of the inner product on $V$. To prove the formula, simply note that $f^*\circ f$ is invertible if $f$ is injective and apply the second criterium of Lemma \ref{lem:proj=mppsinverse}
+\end{proof}
