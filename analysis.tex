@@ -1,0 +1,398 @@
+\input{preamble.tex}
+
+\begin{document}
+\title{Analysis}
+
+\maketitle	
+
+
+\noindent\hrulefill
+\tableofcontents
+\noindent\hrulefill
+
+\phantomsection
+\label{section-phantom}
+
+\section{Overview}
+
+One major aspect of machine learning is the study of \emph{supervised learners}. \\
+For these algorithms one is given a space of \emph{features} $\f{X}$ together with a space of \emph{labels} $\f{y}$ -the underlying idea being that to each feature $x \in \f{X}$, one can attach its correct label $y \in \f{y}$.\\ 
+In order to do this, One first considers a \emph{hypothesis space} $\f{H}$ of functions $\f{X}\mor \f{y}$ which consist of all the ways one wishes to make a prediction, and collects a \emph{dataset} $\Delta \in \f{X}\times \f{y}$.\\
+Given a dataset $\Delta$, one in turn defines a cost function $c: \f{H}\mor \d{R}$ which intuitively describes how accurate any chosen hypothesis $h \in \f{H}$ is. The appropriate $h_\Delta$ hypothesis will then be the one that minimizes this cost function.\\\\
+As such the problem of finding minima for functions plays a key role in the field of machine learning.\\
+Arguably, the most popular approach to this problem is to construct a sequence of hypotheses $h_i \in \f{H}$ which decreases the cost function $c(\Delta,h_i)$ at each step and hopefully converges to this global minimum. One particularly elegant way of constructing such a sequence is the method of gradient descent.\\
+In this chapter, we investigate this method and prove that it is indeed descending and converging to a global minimum under certain circumstances. Along the way, we give a bound for the error at each iteration.
+\section{Background and Notation}
+In this context, the hypothesis space $\f{H}$ will be a Hilbert space, i.e. a real vector space $V$, together with an inner product $\bl{-}{-}$ such that the associated norm $\norm{x}\define \sqrt{\bl{x}{x}}$  is complete. For the reader not comfortable with the language of Hilbert spaces,  we assure him it is safe to assume that $V$ is finite-dimensional, in which case the Gram-Schmidt algorithm exhibits an orthonormal basis, and shows in particular that  $V$ is isomorphic to $\d{R}^n$, together with the usual inner product $\bl{x_1,\ldots , x_n}{y_1,\ldots y_n}\define \sum_i x_iy_i$.\\
+
+\noindent We recall that given Hilbert spaces $V$ and $W$, we denote by $\Hom_\d{R}(V,W)$ the vector space of continuous and linear functions\footnote{in the case where $\dim V\neq \infty$, any linear map is automatically continuous so that the latter condition becomes superfluous}. In particular if $W=\d{R}$, we define $V^\star=\Hom_{\d{R}}(V,\d{R})$.  Moreover, for each element $x \in V$, we can consider $\bl{x}{-}:V\mor \d{R}$ which is clearly linear and continuous. This in turn defines a map $V\mor V^\star:x\mapsto \bl{x}{-}$ and it is a well known fact from the theory of Hilbert spaces that this map is an isomorphism.\\
+\section{Differentiability}
+
+\section{Subgradients}
+
+We begin our analysis of gradient descent sequences by analyzing the role of convexity in minimizing functions. To this end, recall that:
+\begin{definition}
+A function $f:V\mor \d{R}$ is \emph{convex} if for any $x,y$ and $\alpha \in [0,1]$, we have
+\[
+f(\alpha x+(1-\alpha)y)\le \alpha f(x')+(1-\alpha)f(y)
+\]	
+\end{definition}
+
+\noindent Our main reason for considering this property is the following characterization of the gradient:
+\begin{theorem}\label{thm:gradient=subgradient}
+Let $f:V\mor \d{R}$ be differentiable at $x$ and convex.\\
+Then the gradient is the unique vector $\nabla f(x) \in V$ satisfying
+\begin{equation}\label{ineq:subgradient}
+f(y)-f(x)\ge \bl{\nabla f(x)}{ y-x}
+\end{equation}
+for all $y \in V$
+\end{theorem}
+
+\begin{proof}
+\noindent First, we show that the statement is true for the vector $\nabla f(x)$:\\
+By lemma \ref{lem:eq_defs_diff}, given $\epsilon>0$, for any $\vert \vert y-x \vert \vert <\delta $, we have
+\[
+\frac{\vert f(y)-f(x)-\Dir_x f(v) \vert }{\vert\vert y-x\vert\vert}= \frac{\vert f(y)-f(x)- \bl{\nabla f(x)}{y-x} \vert }{\vert\vert y-x\vert\vert}<\epsilon
+\]
+Removing the absolute values and reorganizing yields that
+\[
+f(y)-f(x)-\epsilon\vert \vert y-x\vert \vert \ge \bl{\nabla f(x)}{y-x}
+\]
+for all $y$ in some ball $B(x,\delta)$.\\
+ We  now use the convexity of $f$ to show this in fact holds for \emph{any} $y \in V$. Since $\epsilon >0$ was chosen arbitrarily, the inequality (\ref{ineq:subgradient}) will follow immediately. \\
+To this end, for any $y \in V$, consider the function
+\begin{equation}\label{eq:gradient}
+\psi(y)\define  f(y)-f(x)-\epsilon\vert\vert y-x\vert \vert - \bl{\nabla f(x)}{y-x}
+\end{equation}
+Equation (\ref{eq:gradient}) states that $\psi(y)\ge 0$ whenever $y \in B(x,\delta)$. We must now show that $\psi (y)\ge 0$ for arbitrary $y \in V$.\\
+We leave it to the reader to verify that $\psi$ itself is convex and note that it is trivial that $\psi(x)=0$.\\ 
+Now, pick $\alpha< \frac{\delta}{\vert \vert y-x\vert \vert }$ small enough so that $\alpha y+(1-\alpha )x \in B(x,\delta)$. Then by convexity, we have:
+\[
+\alpha \psi(y)=\alpha \psi(y)+(1-\alpha)\psi(x)\ge \psi\big(\alpha y+(1-\alpha)x\big)\ge 0
+\]
+It follows in particular that $\psi(y)\ge 0$, hence the existence.\\
+To show that $\nabla f(x)$ is the unique vector satisfying the inequality (\ref{ineq:subgradient}), we assume  that $v \in V$ satisfies
+\[
+f(y)-f(x)\ge \bl{v}{ y-x}
+\]
+And conclude that
+\[
+\frac{\bl{ v-\nabla f(x)}{y-x} }{\vert \vert y-x \vert\vert }\le \frac{f(y)-f(x)-\bl{\nabla f(x)}{y-x} }{\vert \vert y-x \vert\vert }\le \frac{\vert f(y)-f(x)-\bl{\nabla f(x)}{(y-x)}\vert }{\vert \vert y-x\vert \vert}
+\]
+The differentiability of$f$ at $x$ now implies that for any $\epsilon>0$
+\[
+\frac{\bl{ v-\nabla f(x)}{y-x} }{\vert \vert y-x \vert\vert }<\epsilon
+\]
+for all $y$ in some ball $B(x,\delta)$. Using the cosine rule we conclude  that \[\frac{\bl{ v-\nabla f(x)}{y-x}}{\vert \vert y-x\vert \vert}=\vert \vert v-\nabla f(x)\vert \vert  \cdot \cos(\theta)<\epsilon\]
+
+Where $\theta$ denotes the angle between $v$ and $\nabla f(x)$ which immediately implies that $v=\nabla f(x)$, as $\epsilon$ was chosen arbitrarily.
+\end{proof}
+
+\noindent This characterization allows us to introduce gradients in the more general setting of convex, non-differentiable functions:
+\begin{definition}
+Let $f:V\mor \d{R}$ be a convex function. The \emph{subgradient} at $x$ is the set $\partial f(x)$ of all vectors $v \in V$ such that 
+\[
+f(y)-f(x)\ge \bl{v}{ y-x}
+\]	
+for any $y \in V$
+\end{definition}
+
+\noindent The above theorem shows that in the case where $f$ is differentiable, we have
+\[
+\partial f(x)=\{\nabla f(x)\}
+\]
+A crucial theorem in the theory of convex optimization is:
+\begin{theorem}
+Let $f:V \mor \d{R}$ be convex, then the subgradient is a nonempty set.	
+\end{theorem}
+
+\noindent The interpretation of the subgradient is rather powerful, as the next two results are easily proven:
+\begin{lemma}\label{lem:stationary_point=global_minimum}
+Let $f:V\mor \d{R}$ be convex and differentiable everywhere. Then
+\begin{itemize}
+\item any local minimum is a global one
+\item Any stationary point is an either a global minimum or maximum	
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+To prove the first point, we use a standard argument already used in \ref{thm:gradient=subgradient}:
+If $f(y)\ge f(x)$ for all $y$ in some ball $B(x,\delta)$, then we pick $\alpha<\frac{\delta}{\vert \vert y-x \vert\vert }$ small enough so that $\alpha y+(1-\alpha)x \in B(x,\delta)$, then using convexity, we obtain:
+\[
+\alpha f(y)+(1-\alpha)f(x)\ge f(\alpha y+(1-\alpha)x)\ge f(x)
+\]
+Which immediately proves the first claim.\\
+\noindent For the second, if $\nabla f(x)=0$, then using the fact that $\nabla f(x)$ is the subgradient, for any $y \in V$, we have
+\[
+f(y)\ge f(x)-\nabla f(x)(y-x)=f(x)
+\]
+\end{proof}
+
+We now  go on to prove an important inequality in a certain setting, which in some sense provides a converse to inequality (\ref{ineq:subgradient})
+
+\begin{lemma}
+Assume $f$ is convex and differentiable everywhere. Moreover, assume the gradient satisfies the Lipschitz condition:
+\[
+\vert  \nabla f(y)-\nabla f(x) \vert \le K\cdot \norm{y-x}
+\]	
+Then for any $x,y \in V$, we have
+\[
+f(x)+\bl{\nabla f(x)}{(y-x)} \le f(y)\le f(x)+\bl{\nabla f(x)}{y-x} + K \cdot \norm{y-x}^2
+\]
+\end{lemma}
+
+\begin{proof}
+The left hand side of the inequality is simply the subgradient inequality (\ref{ineq:subgradient}).\\
+To prove the right-hand side we once again use the subradient inequality (\ref{ineq:subgradient}) to compute:
+\begin{align*}
+f(y)-f(x)-\bl{\nabla f(x)}{y-x}&\le f(y)-\bigg(f(y)+\bl{\nabla f(y)}{x-y}\bigg)-\bl{\nabla f(x)}{y-x}\\
+&=\bl{\nabla f(y)-\nabla f(x)}{y-x}\\
+&\le \vert \vert \nabla f(y)-\nabla f(x)\vert \vert \cdot \vert \vert y-x\vert \vert\\
+&\le K\cdot \vert \vert y-x\vert \vert ^2
+\end{align*}
+
+\end{proof}
+
+\section{Gradient descent sequences}
+
+Given a function $f:V\mor W$ and a point $x\in V$, we say that $f$ is \emph{differentiable} at $x$ if for each $v \in V$, the \emph{directional derivative}
+
+\[
+\Dir_xf(v)\define \lim_{\lambda \to 0}\frac{f(x+\lambda v)-f(x)}{\lambda}
+\]
+
+\noindent is defined for any $v \in V$  and  that  $\Dir_xf(-):V\mor W$ is linear and continuous. A classical result in analysis is the folllowing:
+\begin{lemma}\label{lem:eq_defs_diff}
+A function is differentiable at $x$ iff there exists a linear map $L_x \in \Hom_\d{R}(V,W)$ such that
+\[
+\lim_{\vert \vert v \vert \vert \mor 0}\frac{\vert \vert f(x+v)-f(x)-L_x(v)\vert \vert}{\vert \vert v\vert \vert}=0
+\]
+In which case $L_x=\Dir_xf$
+\end{lemma}
+Furthermore, if $W=\d{R}$, we can make the following observation:
+
+\begin{lemma}
+Assume that $f:V\mor \d{R}$ is differentiable. Then there exists a unique element $\nabla f(x) \in V$ such that 
+\[
+\Dir_xf(-)=\bl{\nabla f(x)}{-}
+\]
+\end{lemma}
+ \begin{proof}
+ Since $\Dir_xf$ lies in $V^\star$ by the definition of differentiability and since the map \[V\mor V^*:x\mor \bl{x}{-} \]	is an isomorphism, the result follows.
+ \end{proof}
+
+\begin{definition}
+Let $f: V\mor \d{R}$ be differentiable. The function \[\nabla f:  V\mor V: x\fun \nabla f(x)\] is the \emph{gradient} of $f$.
+\end{definition}
+ The gradient has another interesting interpretation. To this end, for any $x$, we define the direction $\overline{x}$ of $x$ as the class under the equivalence relation $x\sim y \iff \d{R}^+x=\d{R}^+y$. 
+\begin{remark}
+The direction of $\nabla f(x)$ yields the minimal directional derivative. Indeed, for any other direction $\overline{Y}$ represented by a unit vector $y$, we compute
+\[
+ \Dir_xf(y) =  \bl{\nabla f(x)}{ y} =\vert \vert \nabla f(x)\vert \vert \cdot \vert \vert y \vert \vert \cos(\theta)=\vert \vert \nabla f(x) \vert \vert \cdot \cos \theta
+\] 
+where $\theta$ denotes the angle between $x$ and $y$. This minimum is attained when $\cos(\theta)=-1$, in other words for any vector of direction $-\nabla f(x)$, by a simple application of the Cauchy-Schwarz theorem 
+\end{remark}
+
+\noindent This observation motivates gradient descent.\\
+ Indeed, as mentioned in the Overview, our goal is to minimize the function $f$. One approach would be to begin with any choice of starting point $x_0$ and subsequently build a sequence in such a way that the direction of any vector $x_{i+1}-x_i$ is $\nabla f(x_i)$, the minimal directional derivative.
+\begin{definition}
+A gradient descent sequence is a sequence $(x_i)_{i \in \d{N}} \in V$ such that the direction of two subsequent elements satisfies
+\[
+\overline{x_{i+1}-x_i}=\overline{\nabla f(x_i))}
+\]
+In this case, we necessarily have \[x_{i+1}=x_i-\lambda_i\nabla f(x_i)\]
+\noindent We call $(\lambda_i)_i$ the sequence of \emph{learning rates.}
+\end{definition}
+\noindent This chapter is concerned with understanding when gradient descent sequences converge. The main result here being that in the case where $f$ is differentiable and convex, $\delta f$ is a Lipschitz function with constant $K$ and the learning rates are constant such that $\lambda \le \frac{1}{K}$, we can describe the convergence rather well.
+
+\section{Subgradients}
+We begin our analysis of gradient descent sequences by analyzing the role of convexity in minimizing functions. To this end, recall that:
+\begin{definition}
+A function $f:V\mor \d{R}$ is \emph{convex} if for any $x,y$ and $\alpha \in [0,1]$, we have
+\[
+f(\alpha x+(1-\alpha)y)\le \alpha f(x')+(1-\alpha)f(y)
+\]	
+\end{definition}
+
+\noindent Our main reason for considering this property is the following characterization of the gradient:
+\begin{theorem}\label{thm:gradient=subgradient}
+Let $f:V\mor \d{R}$ be differentiable at $x$ and convex.\\
+Then the gradient is the only vector $\nabla f(x) \in V$ satisfying
+\begin{equation}\label{ineq:subgradient}
+f(y)-f(x)\ge \bl{\nabla f(x)}{ y-x}
+\end{equation}
+for all $y \in V$
+\end{theorem}
+
+\begin{proof}
+\noindent First, we show that the statement is true for the vector $\nabla f(x)$:\\
+By lemma \ref{lem:eq_defs_diff}, given $\epsilon>0$, for any $\vert \vert y-x \vert \vert <\delta $, we have
+\[
+\frac{\vert f(y)-f(x)-\Dir_x f(v) \vert }{\vert\vert y-x\vert\vert}= \frac{\vert f(y)-f(x)- \bl{\nabla f(x)}{y-x} \vert }{\vert\vert y-x\vert\vert}<\epsilon
+\]
+Removing the absolute values and reorganizing yields that
+\[
+f(y)-f(x)-\epsilon\vert \vert y-x\vert \vert \ge \bl{\nabla f(x)}{y-x}
+\]
+for all $y$ in some ball $B(x,\delta)$.\\
+ We  now use the convexity of $f$ to show this in fact holds for \emph{any} $y \in V$. Since $\epsilon >0$ was chosen arbitrarily, the inequality (\ref{ineq:subgradient}) will follow immediately. \\
+To this end, for any $y \in V$, consider the function
+\begin{equation}\label{eq:gradient}
+\psi(y)\define  f(y)-f(x)-\epsilon\vert\vert y-x\vert \vert - \bl{\nabla f(x)}{y-x}
+\end{equation}
+Equation (\ref{eq:gradient}) states that $\psi(y)\ge 0$ whenever $y \in B(x,\delta)$. We must now show that $\psi (y)\ge 0$ for arbitrary $y \in V$.\\
+We leave it to the reader to verify that $\psi$ itself is convex and note that it is trivial that $\psi(x)=0$.\\ 
+Now, pick $\alpha< \frac{\delta}{\vert \vert y-x\vert \vert }$ small enough so that $\alpha y+(1-\alpha )x \in B(x,\delta)$. Then by convexity, we have:
+\[
+\alpha \psi(y)=\alpha \psi(y)+(1-\alpha)\psi(x)\ge \psi\big(\alpha y+(1-\alpha)x\big)\ge 0
+\]
+It follows in particular that $\psi(y)\ge 0$, hence the existence.\\
+To show that $\nabla f(x)$ is the unique vector satisfying the inequality (\ref{ineq:subgradient}), we assume  that $v \in V$ satisfies
+\[
+f(y)-f(x)\ge \bl{v}{ y-x}
+\]
+And conclude that
+\[
+\frac{\bl{ v-\nabla f(x)}{y-x} }{\vert \vert y-x \vert\vert }\le \frac{f(y)-f(x)-\bl{\nabla f(x)}{y-x} }{\vert \vert y-x \vert\vert }\le \frac{\vert f(y)-f(x)-\bl{\nabla f(x)}{(y-x)}\vert }{\vert \vert y-x\vert \vert}
+\]
+The differentiability of$f$ at $x$ now implies that for any $\epsilon>0$
+\[
+\frac{\bl{ v-\nabla f(x)}{y-x} }{\vert \vert y-x \vert\vert }<\epsilon
+\]
+for all $y$ in some ball $B(x,\delta)$. Using the cosine rule we conclude  that \[\frac{\bl{ v-\nabla f(x)}{y-x}}{\vert \vert y-x\vert \vert}=\vert \vert v-\nabla f(x)\vert \vert  \cdot \cos(\theta)<\epsilon\]
+
+Where $\theta$ denotes the angle between $v$ and $\nabla f(x)$ which immediately implies that $v=\nabla f(x)$, as $\epsilon$ was chosen arbitrarily.
+\end{proof}
+
+\noindent This characterization allows us to introduce gradients in the more general setting of convex, non-differentiable functions:
+\begin{definition}
+Let $f:V\mor \d{R}$ be a convex function. The \emph{subgradient} at $x$ is the set $\partial f(x)$ of all vectors $v \in V$ such that 
+\[
+f(y)-f(x)\ge \bl{v}{ y-x}
+\]	
+for any $y \in V$
+\end{definition}
+
+\noindent The above theorem shows that in the case where $f$ is differentiable, we have
+\[
+\partial f(x)=\{\nabla f(x)\}
+\]
+A crucial theorem in the theory of convex optimization is:
+\begin{theorem}
+Let $f:V \mor \d{R}$ be convex, then the subgradient is a nonempty set.	
+\end{theorem}
+
+\noindent The interpretation of the subgradient is rather powerful, as the next two results are easily proven:
+\begin{lemma}\label{lem:stationary_point=global_minimum}
+Let $f:V\mor \d{R}$ be convex and differentiable everywhere. Then
+\begin{itemize}
+\item any local minimum is a global one
+\item Any stationary point is an either a global minimum or maximum	
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+To prove the first point, we use a standard argument already used in \ref{thm:gradient=subgradient}:
+If $f(y)\ge f(x)$ for all $y$ in some ball $B(x,\delta)$, then we pick $\alpha<\frac{\delta}{\vert \vert y-x \vert\vert }$ small enough so that $\alpha y+(1-\alpha)x \in B(x,\delta)$, then using convexity, we obtain:
+\[
+\alpha f(y)+(1-\alpha)f(x)\ge f(\alpha y+(1-\alpha)x)\ge f(x)
+\]
+Which immediately proves the first claim.\\
+\noindent For the second, if $\nabla f(x)=0$, then using the fact that $\nabla f(x)$ is the subgradient, for any $y \in V$, we have
+\[
+f(y)\ge f(x)-\nabla f(x)(y-x)=f(x)
+\]
+\end{proof}
+
+We now  go on to prove an important inequality in a certain setting, which in some sense provides a converse to inequality (\ref{ineq:subgradient})
+
+\begin{lemma}
+Assume $f$ is convex and differentiable everywhere. Moreover, assume the gradient satisfies the Lipschitz condition:
+\[
+\vert  \nabla f(y)-\nabla f(x) \vert \le K\cdot \vert \vert y-x\vert \vert 
+\]	
+Then for any $x,y \in V$, we have
+\[
+f(x)+\nabla f(x)(y-x) \le f(y)\le f(x)+\bl{\nabla f(x)}{y-x} + K \cdot \vert \vert y-x\vert \vert ^2
+\]
+\end{lemma}
+
+\begin{proof}
+The left hand side of the inequality is simply the subgradient inequality (\ref{ineq:subgradient}).\\
+To prove the right-hand side we once again use the subradient inequality (\ref{ineq:subgradient}) to compute:
+\begin{align*}
+f(y)-f(x)-\bl{\nabla f(x)}{y-x}&\le f(y)-\bigg(f(y)+\bl{\nabla f(y)}{x-y}\bigg)-\bl{\nabla f(x)}{y-x}\\
+&=\bl{\nabla f(y)-\nabla f(x)}{y-x}\\
+&\le \vert \vert \nabla f(y)-\nabla f(x)\vert \vert \cdot \vert \vert y-x\vert \vert\\
+&\le K\cdot \vert \vert y-x\vert \vert ^2
+\end{align*}
+
+\end{proof}
+
+This inequality forms the key to the gradient descent convergence theorem.
+\begin{theorem}[convergence of GD]
+Assume $f$ is differentiable and convex, and  that $\nabla f$ is Lipschitz with constant $K$. Assume $\lambda$ is a constant sequence of learning rates such that 
+\[\lambda <\frac{1}{K}\]. Assume that $f$ reaches a minimum at $x_\mu$. Then
+\begin{itemize}
+\item the sequence $\vert \vert x_{i+1}-x_i\vert \vert$ is square summable and converges to $x_\mu$
+\item  For $f^\mu\define f(x_\mu)$. We have the following bound:
+\[
+\vert f(x_i)-f^\mu \vert \le \frac{\vert \vert x_0-x_\mu \vert \vert }{ 2\lambda \cdot K}
+\]	
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+Let $x \in V$, $\lambda \in \d{R}$ and define $x^+\define x-\lambda \nabla f(x)$.\\
+\noindent then we compute:
+\begin{align*}
+	f(x^+)& \le f(x)+\bl{\nabla f(x)}{x^+-x}+K\vert \vert x^+-x\vert \vert^2\\
+	& = f(x)-\lambda \vert \vert \nabla f(x)\vert \vert^2 +K\lambda^2\vert \vert \nabla f(x)\vert \vert^2\\
+	&= f(x)-\big(\lambda- K\lambda^2\big)\cdot \vert \vert \nabla f(x)\vert \vert^2
+\end{align*}
+From this last in equality we can draw a few conclusions:
+\begin{itemize}
+\item	First, since $\lambda \le \frac{1}{K}$, we have $\lambda-K\lambda^2\ge 0$. In particular: 
+\[f(x^+)\le f(x)\]
+\item Next, rewriting, we see that
+\[
+\norm{\nabla f(x)}^2\le \frac{1}{K\lambda^2-\lambda}\bigg(f(x)-f(x^+)\bigg)
+\]
+Implying that for a gradient sequence $(x_i)_i$ (using telescopic sums), we have
+\[
+\sum_i^n \norm{x_{i+1}-x_i}^2 =\lambda^2 \sum_i^n \norm{\nabla f(x_i)}^2\le \frac{\lambda^2}{K\lambda^2-\lambda}\vert f(x_0)-f(x_n)\vert\le \frac{\lambda^2}{K\lambda-\lambda^2}\vert f(x_0)-f^\mu \vert  
+\]
+We conclude that the sequence $\norm{x_{i+1}-x_i}$ is square summable. Moreover, since the gradient is Lipschitz, it is continuous in particular. Hence
+\[
+0=\lim \nabla f(x_i)=\nabla f (\lim x_i))
+\]
+meaning that $\nabla f\big( \lim(x_i)\big)$ is a stationary point, hence the global minimum  $x_\mu$ by Lemma \ref{lem:stationary_point=global_minimum}
+\end{itemize}
+\noindent To prove the second bound, we first apply the subgradient inequality (\ref{ineq:subgradient}) to $x$: \[f(x)\le f(x_\mu)+\bl{\nabla f(x)}{x-x_\mu}\] to obtain
+\begin{align*}
+f(x^+)&\le \bigg( f(x_\mu)+\bl{\nabla f(x)}{x-x_\mu}\bigg)+(K\lambda^2-\lambda)\cdot \vert \vert \nabla f(x)\vert \vert^2	
+\end{align*}
+Now since $K$ and $\lambda$ are positive, we conclude $K\lambda^2-\lambda \ge \frac{\lambda}{2}$, so that
+\begin{align*}
+f(x^+)-f(x_\mu)&\le  f(x_\mu)+\bl{\nabla f(x)}{x-x_\mu}-(K\lambda^2-\lambda)\cdot \vert \vert \nabla f(x)\vert \vert^2	\\ 
+ & \le \frac{1}{2\lambda}\bigg(2\lambda \bl{\nabla f(x)}{x -x_\mu}-\lambda^2\vert \vert \nabla f(x)\vert \vert^2 \bigg)\\
+ & = \frac{1}{2\lambda}\bigg(\vert \vert x - x_\mu\vert \vert^2 -\big(\vert \vert x-x_\mu \vert \vert^2 -2\lambda \bl{\nabla f(x)}{x -x_\mu}+\lambda^2\vert \vert \nabla f(x)\vert \vert^2 \big)\bigg)\\
+ &=\frac{1}{2\lambda}\bigg(\vert \vert x-x_\mu\vert \vert^2-\vert \vert x-\lambda \nabla f(x)-x_\mu \vert \vert^2 \bigg)\\
+ &=\frac{1}{2\lambda}\bigg(\vert \vert x-x_\mu\vert \vert^2-\vert \vert x^+-x_\mu \vert \vert^2 \bigg)\\
+ \end{align*}
+We return to our gradient descent sequence $(x_i)_i$. Then
+\begin{align*}
+\sum_i f(x_{i+1})-f^\mu	& \le \sum_i \frac{1}{2\lambda}\bigg(\vert \vert x_i-x_\mu\vert \vert^2-\vert \vert x_{i+i}-x_\mu \vert \vert^2 \bigg)
+&= \frac{1}{2\lambda}\bigg(\vert \vert x_0-x_\mu\vert \vert^2-\vert \vert x_{i+1}-x_\mu \vert \vert^2 \bigg)
+&\le \frac{1}{2\lambda}\vert \vert x_0-x\vert\vert^2
+\end{align*}
+Moreover, since $f$ decreases with each iteration by the above, it follows that 
+\[k\cdot \big(f(x_n)-f^\mu\big)\le \sum^n_i f(x_i)-f^\mu
+\], implying that
+\[
+f(x_{n})-f^\mu\le \frac{\norm{x_0-x^*}^2}{2\lambda k}
+\]
+\end{proof}
+
+
+\end{document}
