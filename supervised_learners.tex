@@ -1,0 +1,182 @@
+\input{preamble.tex}
+
+\begin{document}
+\title{SUPERVISED LEARNERS}
+
+\maketitle	
+
+
+\noindent\hrulefill
+\tableofcontents
+\noindent\hrulefill
+
+\phantomsection
+\label{section-phantom}
+
+\section{Overview}
+
+
+\section{Defining supervised learners}
+We begin our study of machine learning by suggesting a definition for supervised learners.\\
+Recall that supervised learning (roughly) corresponds to the following paradigm: one is given \emph{data} which consists of \emph{features} and their corresponding \emph{labels}. A supervised learner now assigns to any new feature a new label in a way that matches the given data as well as possible.\\\\
+Let's look at this idea in a little more detail:\\ 
+To begin, we denote the sets of features and labels by $\f{X}$ and $\f{y}$ respectively. We'll also define the \emph{dataspace} $\f{D}$, which consists of a set of possible datasets, each of which is a finite subset of $\f{X}\times \f{y}$ (ie the given features with their assigned labels). Third, we introduce a \emph{hypothesis space} $\f{H}\subset \f{y}^\f{X}$ which contains all the possible ways we'll want to assign a label to a new feature.\\
+A supervised learner now assigns a choice a hypothesis $h_\Delta \in \f{H}$ given a dataset $\Delta \in \f{D}$ in an \emph{optimal} way. In other words, we wish to construct an assignment from the dataspace to the hypothesis space
+\[
+h:\f{D}\mor \f{H}: \Delta\fun h_\Delta
+\]
+such that $h_\Delta$ \emph{fits} the data $\Delta$ optimally.\\ To formalize this optimality condition, we introduce a cost function which assigns a real number given any choice of data and hypothesis:
+\[c: \f{D}\times \f{H}\mor \d{R}: (\Delta,h)\fun c(\Delta,h) \]
+The idea that the choice $h_\Delta$ of hypothesis fits the data best is now translated into $h_\Delta$ minimizing the cost:
+
+\begin{equation} \label{eq:learningcondition}
+	c(\Delta,h_\Delta)=\min_{h\in \f{H}} c(\Delta,h)
+\end{equation}
+
+\noindent Leading us to the following definition:
+
+
+\begin{definition}\label{sl:def:supervisedlearner}
+A supervised learner  $\f{L}$ (or simply learner) is a tuple $(\f{X},\f{y},\f{D},\f{H},c,h)$ where $\f{D}$ consists of finite subsets of $\f{X}\times \f{y}$,  $\f{H}\subset \f{y}^{\f{X}}$  and $h:\f{H}\mor \f{D}$, $c: \f{D}\times \f{H}\mor \d{R}$ are functions satisfying the learning condition
+\[
+	c(\Delta,h_\Delta)=\min_{h\in \f{H}} c(\Delta,h)
+\]
+We say that $\f{L}$ has \emph{learned} the hypothesis $h_\Delta$ from the data $\Delta$.\\
+The functions $c_\Delta\define c(\Delta,-): \f{H}\mor \d{R}$ are the \emph{cost functions} of $\f{L}$
+\end{definition}
+\noindent To make our exposition a little more transparent we'll introduce a bit of notation: 
+
+
+\begin{notation}\label{not:Delta}
+	For any dataset $\Delta \subset \f{X}\times \f{y}$, we define $\Delta_\f{X}\define\big\{(x)_{(x,y)\in \Delta}\big\}$ and define $\Delta_\f{y}$ similarly.\\
+	For a hypothesis $h\in \f{H}$, we let $h(\Delta_\f{X})= \big\{h(x)_{(x,y)\in \Delta}\big\}$
+\end{notation}
+
+In the rest of our discussion, we will encounter a few interesting properties that a learner can possess:\\ 
+\noindent For one, it will be convenient to study learners where the cost function really only depends on the values of the hypothesis on the features of the dataset as follows:
+
+
+\begin{definition}\label{def:regularlearner}
+	A learner $\f{L}$ is \emph{regular} if for any hypotheses $h,k \in \f{H}$ and any dataset $\Delta \in \f{D}$
+	\[
+	h(\Delta_\f{X})= k(\Delta_\f{X})\implies c(\Delta,h)=c(\Delta,k)
+	\]
+\end{definition}
+
+Additionally, it will be convenient to give a specific name to learners where the function $h_\Delta$ is unique:
+\begin{definition}\label{def:sharp}
+We say that a learner is \emph{sharp} if $h_\Delta=\argmin_{h\in \f{H}} c(\Delta,h)$ for any dataset $\Delta \in \f{D}$.\\
+ In particular $h_\Delta$ is fully determined by the cost function $c$
+\end{definition}
+
+
+
+\noindent The first few chapters in this book are dedicated to proving how some of the main learning algorithms that are being used today can indeed be interpreted in the context of Definition \ref{def:supervisedlearner}. Along the way we shall give a clean interpretation of some of these algorithms and build on the theory of learners just described\ldots
+\section{Trainers}
+\subsection{Generalities}
+
+Throughout, we consider a supervised learner $\f{L}$ whose hypothesis space (see \ref{sl:def:supervisedlearner}) $\f{H}$ is a first countable topological space and denote by $\Conv(\f{H})$, the set of convergent sequences in $\f{H}$.\\
+
+\begin{definition}
+Let $\f{L}$ be a learner. A \emph{trainer} consists of a relation
+\[
+\tau \in \f{D}\times \Conv(\f{H})
+\]
+such that $\lim (h_i)_i =h_\Delta$ if $(\Delta,(h_i)_i)\in \tau$
+\end{definition}
+\subsection{An example: Gradient Descent}
+
+\subsection{Boosting}
+
+We begin with a Euclidean learner (ie where $\f{H}$ is a Euclidean space.)
+
+The idea of boosting is to consider a subset $\f{W}\subset \f{H}$ of the hypothesis space and train them to compute the learned hypothesis..
+
+\begin{definition}
+Let $\f{L}$ be a learner and let $\f{W}\subset \f{H}$ be a set of so-called \emph{weak hypotheses}.\\
+A boost for the dataset $\Delta $ consists of a sequence of learners $h_i$ satisfying
+\[
+h_{i+1} \define h_i+\argmin_{w\in \f{W}}\bigg(c(\Delta, h_i+w)\bigg)
+\]
+\end{definition}
+
+\noindent We hope that the following theorem is true
+
+\begin{theorem}
+Let $\f{L}$ be a Euclidean learner and consider $\f{W}\subset \f{H}$.\\ Let $\Delta \in \f{D}$ and let $(h_i)_{i \in \d{N}}$ be a boost for $\Delta$. Then 
+\begin{itemize}
+\item $(h_i)_{i \in \d{N}}$ converges
+\item $\lim h_i = h_\Delta$
+\end{itemize}
+\end{theorem}
+
+
+
+
+
+
+\section{Accuracy}
+Let $\f{y}$ be a set. Recall that $\FRel(\f{y})$ is the set of all finite subsests of $\f{y}\times \f{y}$.
+\begin{definition}
+An accuracy on a set $\f{y}$ is a map of the form
+\[
+\alpha: \FRel(\f{y})\mor \d{R}.
+\]
+\end{definition}
+\begin{definition}
+Given a supervised learner $\r{L}$ and dataset $\Delta \in \f{D}$. We choose a partition $\Delta \define \Delta_{\train}\coprod \Delta_{\test}$ (\emph{a train-test-split}).\\
+For an accuracy $\alpha$ on the target set $\f{y}$, we call the accuracy of $\r{L}$ given the dataset $\Delta$ the number
+\[
+\alpha_\r{L}(\Delta)\define \alpha  \bigg(  \big\{ \big( h_{\Delta_{\train}}  (x),y)  \big) \,\bigg\vert \,(x,y)\in \Delta_{\test} \big\}\bigg).
+\]
+\end{definition}
+
+\noindent More generally, we can define $k$-fold accuracy, by choosing an averaging function:
+\[
+\avg: \d{R}^k\mor \d{R}
+\]
+and performs the same operation $k$ times:
+\begin{definition}
+Given a supervised learner $\r{L}$ and a dataset $\Delta \in \f{D}$, we choose a partition $\Delta = \Delta_1 \coprod \ldots \coprod \Delta_k$.\\
+For an accuracy $\alpha$ on the target set $\f{y}$, we call the accuracy of $\r{L}$ given the dataset $\Delta$ the number
+\[
+\alpha_\r{L}(\Delta)\define \avg\bigg(\alpha\big(\big\{ \big( h_{\Delta\setminus \Delta_i}(x),y)  \big) \,\bigg\vert \,(x,y)\in \Delta_i \big\}\big)\bigg)
+\]
+\end{definition}
+
+
+\subsection{Accuracy of binary classifiers}
+Recall that a binary classifier is a supervised learner where $\f{y}\define \{0,1\}$.\\
+In this setting, there are a few natural choices of accuracies. To efine them, we'll fix a relation $\r{R}\in \FRel(\f{y})$ and define
+\begin{definition}\label{sl:def:binacc}
+We define the following accuracies:
+\begin{itemize}
+\item TP = $\card\big(\big\{(y_{\true},y_{\pred}) \in \r{R}\, \vert\, y_{\true}=y_{\pred} = 1 \big\}\big)$
+ \item TN = $\card\big(\big\{(y_{\true},y_{\pred}) \in \r{R} \, \vert\, y_{\true}=y_{\pred} = 0 \big\}\big)$
+ \item FP = $\card\big(\big\{(y_{\true},y_{\pred}) \in \r{R}\, \vert\, y_{\true}=0,\, y_{\pred} = 1 \big\}\big)$
+ \item TN = $\card\big(\big\{(y_{\true},y_{\pred}) \in \r{R}\, \vert\, y_{\true}=1,\, y_{\pred} = 0 \big\}\big)$
+\end{itemize}
+\end{definition}
+A great way to summarize this information is through precision, recall and the $F_\beta$-score:
+\begin{definition}
+Let $\f{L}$ be a binary classifier.\\
+The recall is given by
+\[
+r=\frac{\text{TP}}{\text{TP}+\text{FN}}
+\]
+(intuitively, how good is the classifier at does detecting positives?).\\
+The precision is given by
+\[
+p= \frac{\text{TP}}{\text{TP}+\text{FP}}
+\]
+(intuitively, how reliable is a positive in the classifier?)
+We combine both by taking the harmonic mean of $r$ and $\beta^2\cdot p$
+\[
+F_\beta = \frac{(1+\beta^2)pr}{\beta^2p+r}
+\]
+\end{definition}
+
+\subsection{Accuracy of trainers}
+
+
+\end{document}
