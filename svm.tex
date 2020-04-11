@@ -1,0 +1,81 @@
+\input{preamble.tex}
+
+\begin{document}
+\title{SUPPORT VECTOR MACHINES}
+
+\maketitle	
+
+
+\noindent\hrulefill
+\tableofcontents
+\noindent\hrulefill
+
+\phantomsection
+\label{section-phantom}
+
+\section{Overview}
+\section{Support Vector Machines}
+
+\section{the Linearly Separable Case}
+
+
+Let $V$ be a normed space and $f:V \mor \{-1,1\}$ a function. 
+\begin{definition}
+A support vector machine is a hyperplane $H \subset V$ which maximizes the tuple
+\[
+(d(H,f^{1}(-1),d(H,f^{-1}(1)))
+\]	
+\end{definition}
+
+\begin{convention}
+	We will always denote $f^{-1}(1)$ (resp. $f^{-1}(-1)$) by $V_1$ (resp. $V_{-1}$).
+\end{convention}
+
+
+
+
+
+\begin{theorem}
+Assume that $V_{-1}, V_1	$ are linearly separable. Then there exists a unique support vector machine
+\end{theorem}
+
+
+
+\begin{lemma}
+Let $H_1=a+V, H_2=b+V$ parallell hyperplanes. and $o \in V^{\perp}$
+\[
+d(H_1,H_2)=\frac{\vert \bl{o}{b-a}\vert}{\vert\vert o\vert \vert}
+\] 	
+\end{lemma}
+
+\begin{proof}
+Since $-b$ is an isometry, we can assume $b=0$. Now, for a vector $x\in a+V$, we have that $d(a+v,V)$	 is the distance to the orthogonal projection of $x$ on $V$. Since by definition, we have $x=\pi_V(x)+\pi_{V^\perp}(x)$, $d(x,V)=\vert \vert \pi_{V^{\perp}}(x)\vert\vert=\pi_{o}(x)$.\\
+Now the projection of $x$ onto the line with direction $o$ is
+\[
+\frac{\vert \bl{o}{x}\vert}{\vert \vert o\vert \vert}=\frac{\vert \bl{o}{a}\vert}{\vert \vert o\vert \vert}\]
+hence, the claim
+\end{proof}
+
+
+\begin{definition}
+A linear separator is an affine function $V\mor \d{R}$ such that $f\cdot \sigma \ge 1$
+\end{definition}
+
+Since $\sigma$ is affine, the fibers $\sigma^{-1}(1)$ and $\sigma^{1}(-1)$ are parallel hyperplanes. This leads to the following definition
+
+\begin{definition}
+A support vector machine is a linear separator $\sigma$ which maximizes
+\[
+d(\sigma^{-1}(1),\sigma^{-1}(-1))
+\]	
+\end{definition}
+
+\begin{theorem}
+A support vector machine is equivalent to the data of a couple of vectors $(a,w)$such that $\bl{w}{x_i+a}\ge 1$ and $\vert \vert w\vert \vert$ is minimal	for this condition.
+\end{theorem}
+
+\begin{proof}
+Since $\sigma$ is affine, the kernel is a hyperplane $a+V$. let $w in V^{\perp}$. Then	
+\end{proof}
+
+\end{document}
