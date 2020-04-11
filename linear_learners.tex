@@ -1,0 +1,280 @@
+\input{preamble.tex}
+
+\begin{document}
+\title{LINEAR LEARNERS}
+
+\maketitle	
+
+
+\noindent\hrulefill
+\tableofcontents
+\noindent\hrulefill
+
+\phantomsection
+\label{section-phantom}
+
+\section{Overview}
+
+We begin our study of learners with one of the most ubiquitous learning algorithms: \emph{linear regression}.\\ in this context, we endow the  label space $\f{y}$ with the structure of a finite-dimensional inner product space. $\f{y}$ is thus equipped with a norm in particular. Before we continue our study of linear regression we recall the following standard consructions of inner product spaces:
+
+\begin{lemma}\label{lem:innerproducts}
+Let $V$ and $W$ be inner product spaces with orthonormal bases $\big(v_1,\ldots v_m\big) \in V$ and $\big(w_1,\ldots , w_n\big) \subset W$. Then
+\begin{enumerate}
+\item $V^\ast \define \Hom_\d{R}(V,\d{R})$ is an inner product space with $\bl{f}{g}\define \bl{v}{v'}$ if $\bl{v}{-}=f$ and  $\bl{-}{v'}=g$
+and orthonormal basis given by the maps $\bigg( \bl{v_1}{-}, \ldots, \bl{v_m}{-} \bigg)$
+\item $V\times W$ is an inner product space with $\bl{(v,w)}{(v',w')}\define \bl{v}{w}+\bl{v'}{w'}$ and orthonormal basis $\bigg((v_i,w_j)\bigg)_{i,j}$
+\item $V\tr W$ is an inner product space with $\bl{v\tr w}{v'\tr w}\define \bl{v}{w}\cdot \bl{v'}{w'}$ and orthonormal basis $\bigg((v_i\tr w_j)\bigg)_{i,j}$	
+\item $\Hom(V,W)$ is an inner product space with an orthonormal basis given by maps $e_{i,j}$ defined as
+\begin{equation}
+e_{i,j}(v_k)=
+\begin{cases}
+0, & \text{if}\ k \neq i  \\
+w_j, & \text{otherwise}
+\end{cases}
+\end{equation}
+\end{enumerate}
+\end{lemma}
+
+
+\begin{proof}
+Items (1) through (3) consist of routine calculations. To show item (4), recall that the function
+\[
+\iota: V^*\tr W \mor \Hom_{\d{R}}(V,W)
+\]
+which assigns to $f\tr w$ the linear map $\iota_{f\tr w}(v)\define f(v)\cdot w$ is an isomorphism. Now, items $(1)$ and $(3)$ together imply that $V^*\tr W$ is indeed an inner product space with  orthonormal basis $\big\{\bl{v_i}{-}\tr w_j\big\}_{i,j}$. Now simply note that the map associated to $\bl{v_i}{-}\tr w_j$ under the function $\iota$ is exactly $e_{i,j}$
+\end{proof}	
+	
+Returning to our discussion above, we consider a finite-dimensional inner product space $\f{y}$ of labels and $\f{X}$ any set of features. Now, for any finite dataset $\Delta\subset \f{X}\times \f{y}$, the space $\f{y}^\Delta$ in turn carries an inner product by Lemma \ref{lem:innerproducts}, so that for any map $f \in \f{y}^\f{X}$, we can define a cost as follows:
+\[
+c(\Delta,f)=\vert \vert y-f(x)\vert\vert_{\f{y}^\Delta}\define\sqrt{\sum_{\Delta} \vert \vert y-f(x)\vert \vert^2}
+\]
+
+The main result of this chapter will be to show that this cost indeed describes a learner under the right conditions. To this end, we will make the following definition:
+\begin{definition}
+Let $\f{H}\subset \f{y}^\f{X}$ and $\Delta \subset \f{X}\times \f{y}$. Then we say that $\Delta$ separates $\f{H}$ if for any $f,g \in \f{H}$:
+\[
+f\arrowvert_{\Delta_{\f{X}}}=g\arrowvert_{{\Delta}_\f{X}}\implies f=g
+\]
+\end{definition}
+The main result of this chapter is: 
+\begin{theorem}\label{thm:linearlearner}
+Let $\f{y}$ be a finite-dimensional inner product space, $\f{X}$ any set and let $\f{H}\subset \f{y}^\f{X}$ be a finite-dimensional subspace of $\f{y}^\f{X}$.  Assume that  any $\Delta \in \f{D}$ separates $\f{H}$ and let $c(\Delta,f)= \vert\vert y-f(x)\vert \vert_{\f{y}^\Delta}$. Then $(\f{X},\f{y},\f{D},\f{H},c)$ defines a sharp learner (as in Definition \ref{def:sharp})
+\end{theorem}
+
+\noindent After having reviewed the necessary linear algebraic, we now have the ingredients to prove the promised main theorem of logistic regression, which we recall below for the reader's convenience: 
+\begin{theorem}[linear regression]\label{thm:linearregression}
+Let $\f{y}$ be a finite dimensional inner product space,  $\f{X}$ any set. Let $\f{H}\subset \f{y}^\f{X}$ be a finite dimensional subspace and \[
+\f{D}=\bigg\{ \Delta \subset \f{X}\times \f{y}\, \, \bigg\vert \vert  \Delta \vert \neq \infty \textrm{ and } \Delta \textrm{ separates }\f{H} \bigg\}.
+\]
+and 
+\[c: \f{D}\times \f{H}\mor \f{R}: (\Delta,f)\fun \vert \vert (y-f(x))_{(x,y)\in \Delta}\vert \vert_{\f{y}^\Delta}
+\]
+Then $\big(\f{X},\f{y},\f{D},\f{H},c\big)$ is a sharp learner.\\
+\end{theorem}
+
+
+
+\begin{proof}
+Let $\Delta\in \f{D}$.\\
+Since $\f{H}$ is finite dimensional, we can choose an inner product on it.  Moreover, the space $\f{y}^\Delta$ is canonically a finite dimensional inner product space by Lemma \ref{lem:innerproducts}\\
+We now consider the map:
+\[
+\textrm{ev}_\Delta: \f{H}\mor \f{y}^\Delta: f \fun f(\Delta_\f{X})
+\]
+(where we used notation \ref{not:Delta}). It is easy to see that this map is linear. Moreover, the fact that  $\Delta$ separates $\f{H}$ is equivalent to $ev_\Delta$ being injective\\
+WE note now that $\ev_\Delta$  allows us to rewrite the cost function $c(\Delta,f)$ as follows:
+\[
+c(\Delta,f)=\vert \vert \big(y-f(x)\big)_{(x,y)\in \Delta}\vert \vert_{\f{y}^\Delta}=\vert \vert \Delta_\f{y}-\textrm{ev}_\Delta(f)\vert \vert_{\f{y}^\Delta}
+\]
+It follows that $f$ that minimizes the cost $c(\Delta, f)$ iff $f$ minimizes the distance between $\Delta_{\f{y}}$ and  $\textrm{ev}_\Delta(f)$. By Lemma \ref{lem:projection}, this is in turn equivalent to requiring that $\textrm{ev}_\Delta(f)$ is the projection of the vector $\Delta_{\f{y}}$ onto the image of the map $\textrm{ev}_\Delta:\f{H}\mor \f{y}^\Delta$. We can now describe this image using Moore-Penrose inverses: indeed, let
+
+\[
+h_\Delta \define\textrm{ev}_\Delta^+\big(\Delta_{\f{y}}\big)
+\]
+
+ Then Lemma \ref{lem:proj=mppsinverse} implies that $\textrm{ev}_\Delta(f)$ is the projection of $\Delta_\f{y}$ onto the image of $\ev_\Delta^+$ if and only if $f$  lies in the affine subspace $h_\Delta+\ker(\textrm{ev}_\Delta)\subset \f{y}^\Delta$. We now recall that $\textrm{ev}_\Delta$ is in fact injective  so that finally $
+f = h_\Delta
+$
+\end{proof}
+
+As a corollary, we can show that the Euclidean learner introduced in Definition \ref{def:euclideanlearner} indeed is a learner provide an explicit formula for the learned hypothesis $h_\Delta$
+\begin{corollary}\label{cor:euclideanlearners}
+Let $\f{X}$ and $\f{y}$ be finite dimensional inner product spaces, 	
+\[
+\f{D} = \bigg\{ \Delta \subset \f{X}\times \f{y}\,\,\bigg\vert\,  \vert \Delta \vert \neq \infty , \textrm{ and span}(\Delta_{\f{X}}) = \f{X}\bigg\}
+\text{,}\,\,\, \f{H}=\Hom_\d{R}(\f{X},\f{y})
+\]
+and 
+\[
+c:\f{D}\times \f{H}\mor \d{R}:(\Delta,f)\fun \vert \vert \big( y-f(x)\big)_{(x,y)\in \Delta} \vert \vert_{\f{y}^\Delta} 
+\]
+Then $(\f{X},\f{y},\f{D},\f{H},c)$ is a sharp linear learner. Moreover, 
+\[
+h_\Delta = \ev_\Delta^+\big(\Delta_{\f{y}}\big)=\bigg(\big(\ev_\Delta^*\circ \ev_\Delta\big)^{-1}\circ \ev_\Delta^*\bigg)(\Delta_\f{y})
+\]
+where $\ev_\Delta:\f{H}\mor \f{y}^\Delta: f \fun f(\Delta_{\f{y}})$
+\end{corollary}
+
+\begin{proof}
+By Theorem \ref{thm:linearlearner}, we simply need to note that $\f{H}=\Hom_{\d{R}}(\f{X},\f{y}$ is finite dimensional and that each dataset $\Delta$ indeed separates $\f{H}$ since $\Delta_\f{X}$ spans the whole of $\f{X}$, so that $f$ is fully characterized on $\Delta_\f{X}$. The formula for $h_\Delta$ follows from the proof of Theorem \ref{thm:linearlearner}, where we showed that $h_\Delta=ev^+(\Delta_y)$ and corollary \ref{cor:psinverse-injective} since $\ev_\Delta$ is injective
+\end{proof}
+
+
+
+\subsection{Coordinates for Euclidean Learners} In the last section of this chapter, we will once and for all fix a Euclidean learner $\f{L}$ (as defined in \ref{def:euclideanlearner}) and introduce coordinates on the feature space $\f{X}$ and label space $\f{y}$. This will allow us to represent the learned hypothesis $h_\Delta$ by a matrix. We will show that this matrix indeed coincides with what is classically referred to as the \emph{regression matrix}.\\
+Let us pick orthonormal bases $\r{E}\define (v_1,\ldots ,v_m)$ for $\f{X}$ and $\r{F}\define (w_1,\ldots w_n)$ for $\f{y}$. We will denote the associated coordinate maps by $\co_\r{E}$ and $\co_\r{F}$ respectively.\\
+Now to any map $f \in \Hom_\d{R}(\f{X},\f{y})$, we'll associate the matrix $M_f\in \Mat_{n\times m}(\d{R})$ whose $i$-th column is given by $\co_\r{F}(v_i)$. It is well known that this matrix satisfies
+\[ \co_{\r{F}}\big(f(v)\big) = M_f\cdot \co_{\r{E}}(v) \]
+Our goal in this section is to compute the matrix $M_{h_\Delta}$ associated to the learned hypothesis $h_\Delta$ of the dataset $\Delta$. More precisely, we will prove the following theorem:
+\begin{theorem}\label{thm:regressionwithcoordinates}
+	 Let $\Delta=\big((x_1,y_1),\ldots ,(x_d,y_d)\big) \in \f{D}$ be a dataset.\\ Let $X = [\co_{\r{E}}(x_i)_i] \in \Mat_{m\times d}(\d{R})$ and $Y = [\co_{\r{F}}(y_j)_j]\in \Mat_{d \times n}(\d{R})$.\\ 
+	 Then the matrix corresponding to the learned hypothesis $h_\Delta \in \Hom_{\d{R}}(\f{X},\f{y})$ is given by \[M_{h_\Delta} = Y\cdot X^+,\] where $X^+$ is the Moore-Penrose pseudo-inverse of $X$ (see \ref{lem:mppscoordinates}).\\ 
+	 In other words, for any feature $v \in \f{X}$, we have\[
+	\co_{\r{F}}\big(h_\Delta(v)\big) =\big( Y\cdot X^+ \big) \cdot \co_\r{E}(v)
+	\]
+\end{theorem}
+
+We will prove this using a series of lemma's.\\ 
+Since $h_\Delta = \ev_\Delta(\Delta_{\f{y}})$ by corollary \ref{cor:euclideanlearners}, it's worth reinterpreting the map $\ev_\Delta: \Hom(\f{X},\f{y})\mor \f{y}^d$ as a map between matrix spaces through the use of the orthonormal bases $\r{E}$ and $\r{F}$. To this end, we consider the isomorphism $M: \Hom(\f{X},\f{y})\mor \Mat_{n\times m}(\d{R})$which assigns to $f$ its matrix representation $M_f$,  after the choice of bases $\r{E}\subset \f{X}$ and $\r{F}\subset \f{y}$. We will also consider the map $\alpha_P$ the multiplication by a matrix $P$ on the right
+
+
+\begin{lemma}\label{lem:lrcoorddiagram}
+	Let $ X$ denote the matrix $\big[ \co_{\r{E}}(x_i)_i\big]$. Then the diagram:
+	\begin{displaymath}
+	\xymatrix{
+	\Hom(\f{X},\f{y}) \ar[rr]^{\ev_\Delta}\ar[d]_{M_{(-)}}&& \f{y}^d\ar[d]^{(\co_{\r{F}})^d}\\
+	\Mat_{n\times m}(\d{R})\ar[rr]_{\alpha_X}&&\Mat_{d\times n}(\d{R})	
+	}
+	\end{displaymath}
+is commutative
+\end{lemma}
+
+\begin{proof}
+	This is really just a restatement of the various definitions: \\Let $f\in \Hom(\f{X},\f{y})$. Then $\big(ev_\Delta \circ \co_\r{F}^d\big)(f)$ is the matrix $\big[(\co_{\r{F}}(f(x_i))_{i}\big]$, whose $i$-th column is the vector $\co_{\r{F}}\big(f(x_i)\big)\in \d{R}^n$.\\
+	Going around the other way,  we obtain the matrix $\alpha_{X} \circ M_f=M_f\cdot X$, whose $i$-th column is $M_F\cdot \big[\co_{\r{E}}(x_i)\big]$. Now, by the definition of $M_f$, we have $M_f\cdot [\co_{\r{E}}(x_i)]=\co_{\r{F}}\big(f(x_i)\big)$, proving the claim
+
+\end{proof}
+
+
+Next, we will use the above lemma to describe the Moore-Penrose pseudo-inverse of $\ev_\Delta$ in terms of the maps $M$, $\alpha_X$ and $\big(\co_{\r{F}}\big)^d$. We'll need a little result from Euclidean geometry to do this..  recall that a map $f$ on an inner product space $V$ is \emph{orthogonal} if it preserves the inner product: 
+\[
+\bl{u}{v}=\bl{f(u)}{f(v)}
+\]
+This is equivalent to the adjoint coinciding with the inverse: $f^*=f^{-1}$. We now have the following linear algebraic lemma:
+\begin{lemma}
+Let $V$ and $W$ be finite dimensional inner product spaces.\\
+	Let $f \in \Hom (V,W)$ and let $\phi \in \Hom_{\d{R}}(V,V)$ and $\psi \in \Hom_{\d{R}}(W,W)$ be orthogonal maps. Then the Moore-Penrose inverse of $\psi \circ f\circ \phi \in \Hom(V,W)$ is given by
+	\[
+	(\psi \circ f\circ \phi )^+ = \phi^{-1}\circ f^+ \circ \psi^{-1}
+	\]
+\end{lemma}
+
+\begin{proof}
+	We need to check the $4$ conditions of criterium $(3)$ in Lemma \ref{lem:mppschar}. First \[(\phi^{-1}\circ f^+ \circ \psi^{-1})\circ (\psi \circ f\circ \phi)\circ (\phi^{-1}\circ f^+ \circ \psi^{-1})=(\phi^{-1}\circ f^+\circ f\circ f^+\circ  \psi^{-1}) = \phi^{-1}\circ f^+ \circ \psi^{-1}\]
+	The second condition is analogous.\\
+	To prove the third condition, we invoke that $\phi$ and $\psi$ are orthogonal, so that ${\phi^{-1}}^*=\phi$ and ${\psi^{-1}}^*=\psi$. We now compute:
+	\[
+	\bigg((\phi^{-1}\circ f^+ \circ \psi^{-1})\circ (\psi \circ f\circ \phi) \bigg)^*=\bigg(\phi^{-1}\circ f^+ \circ f \circ \phi \bigg)^*=\phi^*\circ (f^+\circ f)^* \circ {\phi^{-1}}^*=\phi\circ (f^+\circ f)\circ \phi
+	\]
+	Where the last line follows from the orthogonality of $\phi$ and the fact that $f^+\circ f$ is self-adjoint since $f^+$ is the Moore-Penrose pseudo-inverse to $f$.\\
+	The fourth condition is proven analogously.\\
+\end{proof}
+
+To use the above lemma we'll need to explain how $\co_{\r{F}}$ and $M$ are indeed orthogonal maps. For the benefit of the reader we first recap the inner products involved in the commutative diagram of Lemma \ref{lem:lrcoorddiagram}:
+\begin{itemize}
+	\item The bilinear form on $\Hom(\f{X},\f{y})$ does not have a general description, however  Lemma \ref{lem:innerproducts} implies that the maps 
+	 \begin{equation}
+	e_{i,j}(v_k)=
+	\begin{cases}
+	0, & \text{if}\ k \neq i  \\
+	w_j, & \text{otherwise}
+	\end{cases}
+	\end{equation}
+	form an orthonormal basis
+	\item The space $\f{y}^d$ has the inner product defined by $\bl{(y_1,\ldots, y_n )}{(y'_1,\ldots y'_n)}=\sum_i \bl{y_i}{y'_i}$ and orthonormal basis $\big\{(w_{i_1},\ldots w_{i_m})\big\}_{i_1,\ldots i_m}$ by Lemma \ref{lem:innerproducts}
+	\item The  matrix spaces are endowed with the \emph{Frobenius inner product}: for matrices $A$ and $B$, it's defined as $\bl{A}{B}=\sum_{i,j} A_{i,j}\cdot B_{i,j}$. It follows immediately that the elementary matrices $\big\{E_{i,j}\big\}_{i,j}$ form an orthonormal basis for these spaces.\\
+	Another description of this inner product will be useful later on. Indeed, we have:
+	\[
+	\Tr(A\cdot B^t)=\sum_k(A\cdot B^t)_{k,k}=\sum_k(\sum_j A_{k,j}B^t_{j,k})=\sum_k(\sum_j A_{k,j}B_{k,j})=\bl{A}{B}
+	\]
+	This allows us to prove certain properties. For example, for any matrix $P$, we have
+	\[
+	\bl{A}{B\cdot P}=\Tr\big(A\cdot (B\cdot P)^t\big)=\Tr(A\cdot P^t\cdot B^t)=\bl{(A\cdot P^t)}{B}
+	\]
+\end{itemize}
+We now have:
+
+\begin{lemma}\label{lem:orthogonal}
+	The maps $M$ and $(\co_{\r{F}})^d$ are orthogonal
+\end{lemma}
+
+\begin{proof}
+	Indeed, it suffices to show that both maps $M$ and $\big(\co_{\r{F}}\big)^d$ send an orthonormal basis to an orthonormal basis. Now, the map $M$ sends the orthonormal basis $\big\{e_{i,j}\big\}_{i,j}$ to the orthonormal basis of elementary matrices $\big\{ E_{i,j}\big\}_{i,j}$.\\
+	The map $(\co_{\r{F}})^d$ in turn sends the orthonormal basis $\big\{(w_{i_1},\ldots w_{i_m})\big\}_{i_1,\ldots i_m}$ to the elementary matrices $\big\{E_{i,j}\big\}_{i,j}$ as well.
+\end{proof}
+
+Combining both lemma's hence lets us write the Moore-Penrose inverse of $\ev_\Delta^+$ as
+\[
+\ev_\Delta^+ =\bigg( M^{-1} \circ \alpha_X\circ\co_{\r{F}}^d\bigg)^+= M^{-1}\circ \bigg( \alpha_X \bigg)^+\circ\co_{\r{F}}^d
+\]
+We now wish to simplify the map $\bigg(\alpha_X\bigg)^+$. To this end we note that for any matrix $P \in \Mat_{d\times m }(\d{R})$, we can associate its Moore-Penrose inverse as the inverse following example \ref{lem:mppscoordinates}
+\begin{lemma}
+	For any $P \in \Mat_{d\times m}(\d{R})$, let $\alpha_P$ denote the right multplication by $P$
+	\[
+	\alpha_P:\Mat_{n\times m}(\d{R})\mor \Mat_{d\times n}(\d{R}):A\fun A\cdot P
+	\]
+	 Then we have $\big( \alpha_P\big)^+ = \alpha_{P^+}$
+\end{lemma}
+
+\begin{proof}
+We simply need to show that $\alpha_{P^+}$ satisfies the conditions of Moore-Penrose pseudo-inverse by checking $(3)$ of Lemma \ref{lem:mppschar}.\\
+The first two conditions are absolutely trivial.\\ 
+To prove the third condition, we need to show that the map $\alpha_{P}\circ \alpha_{P^+}$ (which coincides with $\alpha_{P^+\cdot P}$) is self-adjoint. To this end, we let $A,B \in \Mat_{n\times m}(\d{R})$. The discussion before Lemma \ref{lem:orthogonal} yields:
+\[
+\bl{A}{\alpha_{P^+\cdot P}(B)}=\Tr\bigg(A\cdot \big(B\cdot P^+\cdot P\big)^t\bigg)=\Tr\bigg(A \cdot (P^+\cdot P)^t\cdot B\bigg) = \Tr\bigg(A \cdot (P^+\cdot P)\cdot B^t\bigg)=\bl{\alpha_{P^+\cdot P}(A)}{B}
+\]
+Where the $3$rd equality follows from the fact that the matrix $P^+\cdot P$ is symmetric by Lemma \ref{lem:mppscoordinates}.\\
+The proof of condition $(4)$ is completely analogous.
+\end{proof}
+
+The above lemma allows us to rewrite the Moore-Penrose pseudo-inverse one step further
+\[
+\ev_\Delta^+ = M_{}^{-1} \circ \alpha_{X^+} \circ \big( \co_{\r{F}}\big)^d
+\]
+
+We can now prove the main theorem of this section:
+
+\begin{proof}[proof of Theorem \ref{thm:regressionwithcoordinates}]
+	We want to show that $M_{h_\Delta} = Y\cdot X^+$. Now, we know from Corollary \ref{cor:euclideanlearners} that $h_\Delta = \ev_\Delta^+\big(\Delta_{\f{y}}\big) =\ev_\Delta^+\big(y_1,\ldots y_d\big)$. Moreover, the above discussion shows that 
+\[
+\ev_\Delta^+ = M^{-1} \circ \alpha_{X^+} \circ \big(\co_{\r{F}}\big)^d
+\]
+So that applying the set of features $(y_1,\ldots y_d)$ to the left hand side followed by the map $M$ yields
+\[
+M_{h_\Delta}=\bigg(\alpha_{X^+} \circ \co^d_\r{F}\bigg)(y_1,\ldots , y_d)=\alpha_{X^+}\bigg( \big[\co_{\r{F}}(y_1)\ldots \co_{\r{F}}(y_d)\big]\bigg)=\alpha_{X^+}(Y) = Y\cdot X^+
+\]
+as required
+\end{proof}
+
+
+
+\begin{definition}
+We say that a learner is linear if it is of the above form
+\end{definition}
+
+One particular type of linear learner will be of particular interest, as it allows us to be a little more explicit with certain constructions: if we assume that $\f{X}$ itself carries the structure of a finite-dimensional inner product space, and put $\f{H}\define \Hom_{\d{R}}(\f{X},\f{y})$ as well as consider finite datasets $\Delta \subset \f{X}\times \f{y}$ such that $\Delta_{\f{X}}$ spans the whole of $\f{X}$
+(where we recall our use of the notation \ref{not:Delta}), then it's easy to see that the conditions of Theorem \ref{thm:linearlearner} are satisfied so that we indeed obtain an example of a linear learner:
+
+
+\begin{definition}\label{def:euclideanlearner}
+A \emph{Euclidean learner} is a sharp (linear) learner where $\f{X},\f{y}$ are finite-dimensional inner product spaces, \[
+\f{D} = \bigg\{ \Delta \subset \f{X}\times \f{y}\,\,\bigg\vert\,  \vert \Delta \vert \neq \infty , \textrm{ and span}(\Delta_{\f{X}}) = \f{X}\bigg\}
+\text{,}\,\,\, \f{H}=\Hom_\d{R}(\f{X},\f{y})
+\]
+and 
+\[
+c:\f{D}\times \f{H}\mor \d{R}:(\Delta,f)\fun \vert \vert \big( y-f(x)\big)_{(x,y)\in \Delta} \vert \vert_{\f{y}^\Delta} 
+\]
+\end{definition}
+
+\end{document}
