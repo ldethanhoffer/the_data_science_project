@@ -7,6 +7,8 @@
 \usepackage{calrsfs}
 
 
+
+%environments:
 \theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[section]
 \newtheorem{convention}[corollary]{Convention}
@@ -35,9 +37,11 @@
 \DeclareMathAlphabet{\pr}{OMS}{zplm}{m}{n}
 
 
-%start at section 0 for overview 
+%start at section 0 for the overview: 
 \setcounter{section}{-1}
 
+
+%macros:
 \newcommand{\A}{\mathcal{A}}
 \DeclareMathOperator{\avg}{avg}
 \newcommand{\abs}[1]{\vert #1 \vert }
@@ -49,8 +53,8 @@
 \DeclareMathOperator{\argmax}{argmax}
 \DeclareMathOperator{\Aut}{Aut}
 \renewcommand{\b}{\bullet}
+\newcommand{\bl}[2]{\left\langle #1\,,#2\, \right\rangle}
 \newcommand{\bp}{\mathbf{\Pi}}
-\newcommand{\bl}[2]{\left\langle #1,#2\right\rangle}
 \def\BVm{\operatorname{BV}_-}
 \DeclareMathOperator{\BiMod}{BiMod}
 \DeclareMathOperator{\bimod}{bimod}

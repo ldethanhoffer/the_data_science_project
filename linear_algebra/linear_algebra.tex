@@ -1,18 +1,26 @@
-\input{preamble.tex}
+\input{../preamble.tex}
 
 \begin{document}
-\title{\textbf{MATHVSMACHINE: THE BOOK}}
-\author{LOUIS DE THANHOFFER DE VOLCSEY}
+\title{LINEAR ALGEBRA}
 \date{}
 \maketitle	
 
+\noindent\hrulefill
+\tableofcontents
+\noindent\hrulefill
 
-\noindent\hrulefill
-\tableofcontents{}
-\noindent\hrulefill
+\phantomsection
+\label{section-phantom}
+
+
+
+\section{Overview}
+\label{section:overview}
+
+
 
 \section{the Normal equation}
-
+\label{section:the_normal_equation}
 
 \noindent In this section, we'll refresh the reader on projections onto images of linear maps: The starting point of this construction is the following lemma:
 \begin{lemma}\label{lem:mindist-perp}
@@ -312,3 +320,80 @@ f^+ = (f^*\circ f)^{-1}\circ f^*
 \begin{proof}
 	Since $f$ is injective (so that $\ker(f)=0$), $f^+$ is the pseudo-inverse to the triple $(V,\im(f)^{\perp},f)$ by Definition \ref{def:mpinverse}. It follows immediately that this condition is independent of the inner product on $V$. To prove the formula, simply note that $f^*\circ f$ is invertible if $f$ is injective and apply the second criterium of Lemma \ref{lem:proj=mppsinverse}
 \end{proof}
+
+
+\section{Principal Component Analysis}
+
+Throughout this section $V$ will denote a fd. Euclidean space with inner product $\bl{-}{-}$. We will also consider a finite subset $\Delta\subset V$of \emph{data}. The goal of this section is to exhibit an orthonormal basis for $V$ which is fits the data \emph{suitably}. We begin by defining a principal component. It will be motivated by the following theorem which we prove later on:
+
+\begin{theorem}
+\label{theorem:principal_component}
+Let $\overline{\Delta}= \frac{1}{\vert \Delta\vert}\sum_{x\in \Delta} x$ and $L$ be the set of lines through $\overline{\Delta}$ in $V$. Then there is a unique line $\ell\in L$ minimizing
+\[
+\sum_{x \in \Delta} \vert\vert x-\pi_\ell(x) \vert\vert^2
+\]
+
+\end{theorem}
+
+\begin{definition}
+\label{definition:principal_component}
+The principal component of $\Delta$ is the line $\ell \in L$ defined in the above theorem
+\end{definition}
+
+To make our exposition clearer, we introduce the notation $\bl{\Delta}{u}\define \{\bl{x}{u}\}_{x\in \Delta}\in \d{R}^\Delta$. Note that this defines a  random variable $1_{\bl{\delta}{u}}$ on $\d{R}$, so that can thus use the language and technology from probability theory. We will prefix the diferent probabilistic concepts pertaining to this RV with the word $\emph{explained}$.
+
+\begin{lemma}
+\label{lemma:mse_variance}
+Assume $\overline{\Delta}=0$ and $\ell = \d{R}u$ where $\vert \vert u\vert \vert$. Then the following are equivalent:
+\begin{itemize}
+\item The mean square error $\sum_{x \in \Delta} \vert\vert x- \pi_\ell(x)\vert\vert^2$ is minimal
+\item The explained variance $\sum_{x \in \Delta} \bl{x}{u}^2$ is minimal
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+This is an easy exercise in bilinear forms
+\end{proof}
+For the next lemma we recall that the spectral theorem tells us that a symmetric endomorphism always has basis of eigenvectors which can be chosen to be orthonormal.
+
+\begin{lemma}
+\label{lemma:variance_eigenvalue}{}
+Assume $\overline{\Delta}=0$. Let $u_1,\ldots u_n$ be an orthonormal basis for $V$.\\
+Consider the linear map
+\[
+\phi: V\mor \d{R}^{\Delta}:u\fun \bl{\Delta}{u}
+\]
+Let $u_1,\ldots u_n$ be an orthormal basis of eigenvectors for $\phi^t\circ \phi \in \End_\d{R}(V)$.
+Then
+\begin{itemize}
+\item eigenvalue for $u_i$ is $\lambda_i \define \sum_{x\in \Delta}\bl{x}{u_i}$
+\item $\sup_{u\in B(0,1)} \sum_{x\in\Delta}\bl{x}{u}=\max_i \{\lambda_i\}$
+\end{itemize}
+ eigenvalue for $u_i$ is $\lambda_i \define \sum_{x\in \Delta}\bl{x}{u_i}$. Moreover
+\end{lemma}
+
+\begin{proof}
+Let $u\in V$. Then the explained variance of $\Delta$ with respect to $u$ is
+\[
+\sum_{x\in\Delta}\bl{x}{u}^2  = \vert\vert \phi(u)\vert\vert_{\d{R}^\Delta}^2 = \bl{\phi(u)}{\phi(u)} = \bl{u}{(\phi^t\circ \phi)(u)}
+\]
+Writing $u\define \sum \alpha_iu_i$ wrt the orthonormal basis of eigenvectors then yields
+\[
+\sum_{x\in\Delta}\bl{x}{u}^2  = \bl{u}{(\phi^t\circ \phi)(u)} = \bl{\sum\alpha_iu_i}{(\phi^t\circ \phi)(\sum \alpha_i u_i )} 
+= \bl{\sum\alpha_iu_i}{(\sum \lambda_i\alpha_i u_i )} = \sum_i \lambda_i\alpha_i^2
+\]
+In particular if $u=u_i$, we obtain the first claim. To prove the second, we assume additionally that $u \in B(0,1)$ and let $\lambda_n$ be the largest eigenvalue. Then
+\[
+\sum_{x\in\Delta}\bl{x}{u}^2 =  \sum_i \lambda_i\alpha_i^2\le \lambda_n \sum \alpha_i^2 = \lambda_n
+\]
+And this value indeed gets reached by $u_n$
+\end{proof}
+{}{}
+\begin{proof}[proof of Theorem \ref{theorem:principal_component}]
+First we claim that wlog we can assume that $\overline{\Delta}=0$. Indeed\\
+Next, by Lemma \ref{lemma:mse_variance}, we need to maximize the explained variance $\sum_{x\in\Delta}\bl{x}{u}^2$ which by lemma \ref{lemma:variance_eigenvalue} {}coincides with the largest eigenvalue. The line $\ell$ is now spanned by any corresponding eigenvector.
+\end{proof}
+
+Since the endomorphism $\phi^t\circ \phi$ plays a crucial role in our discusion, we 
+
+\end{document}
