@@ -1,14 +1,36 @@
 \documentclass{article}
 \usepackage{amsmath,amsthm,amsfonts,amssymb,tikz,scalerel,mathrsfs,marvosym,titlesec,leftidx}
 
+%for diagrams
 \usepackage[all]{xy}
+
 \usepackage{fancyhdr}
 \usepackage{blkarray}
 \usepackage{calrsfs}
 
 
 
-%environments:
+%for referencing accross documents
+\usepackage{xr-hyper}
+
+\externaldocument[probability-]{probability}
+
+
+
+%change the default font to bodoni
+\usepackage[default]{gfsbodoni}
+\usepackage[T1]{fontenc}
+
+% Declare calligraphic font:
+\DeclareMathAlphabet{\pr}{OMS}{zplm}{m}{n}
+
+
+%start at section 0 for the overview: 
+\setcounter{section}{-1}
+
+
+%environments
+%
 \theoremstyle{plain}
 \newtheorem{corollary}{Corollary}[section]
 \newtheorem{convention}[corollary]{Convention}
@@ -29,19 +51,8 @@
 \newtheorem{definition*}{Definition}
 \newtheorem{notation}{Notation}
 
-%change the default font to bodoni
-\usepackage[default]{gfsbodoni}
-\usepackage[T1]{fontenc}
-
-% Declare calligraphic font:
-\DeclareMathAlphabet{\pr}{OMS}{zplm}{m}{n}
-
-
-%start at section 0 for the overview: 
-\setcounter{section}{-1}
-
-
-%macros:
+%macros
+%
 \newcommand{\A}{\mathcal{A}}
 \DeclareMathOperator{\avg}{avg}
 \newcommand{\abs}[1]{\vert #1 \vert }
