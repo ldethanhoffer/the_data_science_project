@@ -13,60 +13,61 @@
 \phantomsection
 \label{section-phantom}
 
+
+
 \section{Overview}
 
 
-\section{the General theory}
 
-\subsection{Measurable spaces}
+\section{Probability Spaces}
+\label{section:measurable_spaces}
+
 \begin{definition}
-Let $\Omega$ be a set.\\
-A $\sigma$-algebra on $\Omega$ is a collection $\r{F}\subset \pr{P}(\Omega)$ of subsets of $\Omega$ such that
+\label{definition:measurable_space}
+Let $\Omega$ be a set. A $\sigma$-algebra on $\Omega$ is a collection $\r{F}\subset \pr{P}(\Omega)$ of subsets of $\Omega$ such that
 \begin{itemize}
 \item $\Omega \in \r{F}$
 \item $\forall A, B \in\r{F}: A\setminus B \in\r{F}$
 \item if $A_i\in\r{F},\,\,\forall \,i \in \d{N}$ then $\bigcup_{i \in \d{N}} A_i \in \r{F}$
 \end{itemize}
-A measurable space consists of a couple $\big(\Omega,\r{F}\big)$ where $\r{F}$ is a $\sigma$-algebra on $\Omega$
+A measurable space consists of a couple $\big(\Omega,\r{A}\big)$ where $\r{F}$ is a $\sigma$-algebra on $\Omega$
 \end{definition}
 
-\subsection{Probability spaces}
 \begin{definition}
-Let $(\Omega,\r{F})$ be a measurable space.\\
-A measure on $(\Omega,\r{F})$ is a map $\lambda:\r{F}\mor \d{R}_+$ such that 
+\label{definition:probability_space}
+Let $(\Omega,\r{F})$ be a measurable space. A measure on $(\Omega,\r{F})$ is a map $\lambda:\r{A}\mor \d{R}_+ \cup \{\infty\}$ such that 
 \begin{itemize}
 \item $\lambda\big(\varnothing) = 0$
 \item $\lambda\big(\bigcup A_i\big) = \sum_{i \in \d{N}} \lambda\big(A_i\big)$
 \end{itemize}
 We say that $\lambda$ is a \emph{probability} if $\lambda(\Omega)=1$
-We call the resulting triple a measure (resp. probabbility) space
-
-
+We call the resulting triple a measure (resp. probabbility) space.
 \end{definition}
 
-\subsection{Random variables}
 \begin{definition}
-Let $(\Omega, \r{U}, \lambda)$ be a probability space and $(\Omega, \r{F})$ a measurable space. A random variable is a function
+\label{definition:random_variable}
+Let $(U, \r{U}, \lambda)$ be a probability space and $(\Omega, \r{F})$ a measurable space. A random variable is a function
 \[
 X: U\mor \Omega
 \]
-such that $X^*(\r{F})\subset \r{U}$
+such that $X^{-1}(\r{F})\le \r{U}$
 \end{definition}
+
 \begin{lemma}
-Let $X: (\Omega, \r{F}, P)\mor (\Omega, \r{F})$ be a random variable. Then the function
+\label{lemma:pushforward}
+Let $X: (U, \r{U}, P)\mor (\Omega, \r{F})$ be a random variable. Then
 \[
 X_*P: \r{F}\mor \d{R}:  A\fun P(X^{-1}(A)) 
 \]
 defines a probability.
 \end{lemma}
-\begin{proof}
-This is a routine exercise
-\end{proof}
+
 \begin{definition}
-The probability $X_*P$ defined above is the \emph{pushforward of $P$ along $A$}.\\
+\label{definition:pushfoward}
+The probability $X_*P$ defined above is the \emph{pushforward of $P$ along $X$}.\\
 We write $X\sim Q$ if $X_*P =Q$
 \end{definition}
-\section{a Taxonomy of probabilities}
+\section{a Taxonomy of Probabilities}
 \subsection{Discrete probabilities}
 \begin{definition}
 We say that a probability $P$ on $(\Omega,\r{F})$ is discrete if there exists a sequence $(x_i)_{i \in \d{N}}$ such that
@@ -77,14 +78,21 @@ P\big(\Omega\setminus\{(x_i)_{i \in \d{N}}\}\big)=0
 Note that in particular any probability on a countable set is discrete
 \subsubsection{Bernouilli}
 \begin{definition}
-Let $\Omega\define \d{Z}_2$ and $\pr{F}=\pr{P}(\Omega)$. Then any probabilityon $\Omega$ is called Bernouilli.\\
+Let $\Omega\define \d{Z}_2$ and $\pr{F}=\pr{P}(\Omega)$. Then any probability on $\Omega$ is called Bernouilli.\\
 If $p=P(1)$, then the density is given by
 \[
 f_P(x) = p^x(1-p)^{1-x}
 \]
 \end{definition}
 
+
+\subsection{Continuous Probabilities}
+
+
+
 \section{Sampling}
+
+
 
 \begin{convention}\label{conv:prob_univ}
 We will fix a probability space $(\textrm{U}, \r{U},\lambda)$ and throughout any random variable $X$ on $(\Omega,\r{F})$ will always have this space as its domain.
