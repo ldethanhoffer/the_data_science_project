@@ -1,11 +1,14 @@
 \documentclass{article}
-\usepackage{amsmath,amsthm,amsfonts,amssymb,tikz,scalerel,mathrsfs,marvosym,titlesec,leftidx}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,tikz,scalerel}
+% load calligraphic font
+%\usepackage{mathrsfs}
+\usepackage{marvosym,titlesec}
 
 %for diagrams
 \usepackage[all]{xy}
 
 \usepackage{fancyhdr}
-\usepackage{blkarray}
+%\usepackage{blkarray}
 \usepackage{calrsfs}
 
 
@@ -19,11 +22,11 @@
 
 
 %change the default font to bodoni
-\usepackage[default]{gfsbodoni}
-\usepackage[T1]{fontenc}
+%\usepackage[default]{gfsbodoni}
+%\usepackage[T1]{fontenc}
 
 % Declare calligraphic font:
-\DeclareMathAlphabet{\pr}{OMS}{zplm}{m}{n}
+%\DeclareMathAlphabet{\pr}{OMS}{zplm}{m}{n}
 
 
 %start at section 0 for the overview: 
@@ -200,7 +203,7 @@
 \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 
 
-%imake nterline a little larger
+%imake interline a little larger
 \linespread{1.28}
 
 %change the dimensions of the margin
