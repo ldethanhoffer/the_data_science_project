@@ -7,6 +7,5 @@
 *.gz
 *.log
 *.out
-*.pdf
 *.toc
 *.pycc
