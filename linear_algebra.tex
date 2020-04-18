@@ -4,6 +4,7 @@
 
 \title{LINEAR ALGEBRA}
 \date{}
+\author{Louis de Thanhoffer de Volcsey, Ph.D.}
 \maketitle	
 
 \noindent\hrulefill
@@ -319,8 +320,8 @@ f^+ = (f^*\circ f)^{-1}\circ f^*
 \section{Principal Component Analysis}
 \label{section:principal_component_analysis}
 
-\subsection{Main Result}
-\label{subsection:main_result}
+\subsection{the Principal component basis}
+\label{subsection:pc_basis}
 
 Throughout this section $V$ will denote a fd. Euclidean space with inner product $\bl{-}{-}$. We will also consider a finite subset $\Delta\subset V$of \emph{data}. The goal of this section is to exhibit an orthonormal basis for $V$ which is fits the data \emph{suitably}. We begin by defining the principal components of $\Delta$, a specific choice of lines  which span an orthonormal basis particularly compatible with $\Delta$.\\ 
 To simplify our exposition, we first introduce the notation $\bl{\Delta}{u}\define \{\bl{x}{u}\}_{x\in \Delta}\in \d{R}^\Delta$. This set defines the random variable $1_{\bl{\Delta}{u}}$ on $\d{R}$, so that can thus use the language and technology from probability theory.\\
@@ -418,8 +419,7 @@ One can use PCA to find a way to reduce the dimension of the dataspace:
 \begin{definition}
 \label{definition:pc_dimension_reduction}
 The reduction of order $n$ of the dataset $\Delta \subset V$ is the image of the map
-
-\end{defintion}
+\end{definition}
 
 \begin{definition}
 \label{definition:pc_recontruction}
