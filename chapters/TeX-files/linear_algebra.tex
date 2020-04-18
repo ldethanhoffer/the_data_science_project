@@ -323,17 +323,26 @@ f^+ = (f^*\circ f)^{-1}\circ f^*
 \subsection{the Principal component basis}
 \label{subsection:pc_basis}
 
-Throughout this section $V$ will denote a fd. Euclidean space with inner product $\bl{-}{-}$. We will also consider a finite subset $\Delta\subset V$of \emph{data}. The goal of this section is to exhibit an orthonormal basis for $V$ which is fits the data \emph{suitably}. We begin by defining the principal components of $\Delta$, a specific choice of lines  which span an orthonormal basis particularly compatible with $\Delta$.\\ 
-To simplify our exposition, we first introduce the notation $\bl{\Delta}{u}\define \{\bl{x}{u}\}_{x\in \Delta}\in \d{R}^\Delta$. This set defines the random variable $1_{\bl{\Delta}{u}}$ on $\d{R}$, so that can thus use the language and technology from probability theory.\\
+Throughout this section $V$ will denote a fd. Euclidean space with inner product $\bl{-}{-}$. We will also consider a finite subset $\Delta\subset V$of \emph{data}. The goal of this section is to exhibit an orthonormal basis for $V$ which is fits the data \emph{suitably}. We begin by defining the principal components of $\Delta$, a specific choice of lines  which span an orthonormal basis particularly compatible with $\Delta$.\\
+To make our exposition clearer, we introduce the notation $\bl{\Delta}{u}\define \{\bl{x}{u}\}_{x\in \Delta}\in \d{R}^\Delta$. Recall from Probability (TODO) that $\Delta$ defines the random variable $1_\Delta: V\mor \d{R}$ whose pushforward probability is the sample probability on $\d{R}$. Moreover, we can also consider the following random variable
+\[
+X_u\define V\mor \d{R}: x:\fun \bl{x}{y}\cdot1_\Delta
+\]
+Whose pushforward probability is the explained probability. More generally, we will prefix the diferent probabilistic concepts pertaining to this RV with the word $\emph{explained}$.\\ 
 We begin by constructing the first principal component, whose existence is guaranteed by the following theorem:
 
 \begin{theorem}
 \label{theorem:principal_component}
-Let $\overline{\Delta}= \frac{1}{\vert \Delta\vert}\sum_{x\in \Delta} x$ and $L$ be the set of lines through $\overline{\Delta}$ in $V$. Then there is a unique line $\ell\in L$ minimizing
+Let $\overline{\Delta}= \frac{1}{\vert \Delta\vert}\sum_{x\in \Delta} x$ and let $L$ be the set of lines through $\overline{\Delta}$ in $V$. Then there is a unique line $\ell \in L$ minimizing
 \[
 \sum_{x \in \Delta} \vert\vert x-\pi_\ell(x) \vert\vert^2
 \]
-
+Moreover, if we write $\ell=\overline{\Delta}+\d{R}u$ with $\vert \vert u\vert \vert =1$, then the above three quantities coincide:
+\begin{itemize}
+\item $\sum_{x \in \Delta} \vert\vert x-\pi_\ell(x) \vert\vert^2$
+\item the explained variance of $X_u$
+\item The largest eigenvalue of $M^t\cdot M$ where $\phi: V\mor \d{R}^\Delta$ is given by $\phi(u)=\bl{\Delta}{u}$ 
+\end{itemize}
 \end{theorem}
 
 \begin{definition}
@@ -341,24 +350,27 @@ Let $\overline{\Delta}= \frac{1}{\vert \Delta\vert}\sum_{x\in \Delta} x$ and $L$
 The principal component of $\Delta$ is the line $\ell \in L$ defined in the above theorem
 \end{definition}
 
-To make our exposition clearer, we introduce the notation $\bl{\Delta}{u}\define \{\bl{x}{u}\}_{x\in \Delta}\in \d{R}^\Delta$. Note that this defines a random variable $1_{\bl{\Delta}{u}}$ on $\d{R}$, so that can thus use the language and technology from probability theory. We will prefix the diferent probabilistic concepts pertaining to this RV with the word $\emph{explained}$.
-
 \begin{lemma}
 \label{lemma:mse_variance}
-Assume $\overline{\Delta}=0$ and $\ell = \d{R}u$ where $\vert \vert u\vert \vert$. Then the following are equivalent:
+Let $\ell = \d{R}u$ where $\vert \vert u\vert \vert=1$. Then the following are equivalent:
 \begin{itemize}
 \item The mean square error $\sum_{x \in \Delta} \vert\vert x- \pi_\ell(x)\vert\vert^2$ is minimal
-\item The explained variance $\sum_{x \in \Delta} \bl{x}{u}^2$ is minimal
-\end{itemize}
+\item  $\sum_{x \in \Delta} \bl{x}{u}^2$ is minimal
+\end{itemize}\subsection{Application: Dimension Reduction}
 \end{lemma}
 
 \begin{proof}
 This is an easy exercise in bilinear forms
 \end{proof}
+
+\begin{remark}
+\label{remark:explained_variance}
+Note that if $\overline{\Delta}=0$ (an assumption commonly made in ML), then the latter quantity is the \emph{explained variance} of $\Delta$ in our terminology.
+\end{remark}
 For the next lemma we recall that the spectral theorem tells us that a symmetric endomorphism always has basis of eigenvectors which can be chosen to be orthonormal.
 
 \begin{lemma}
-\label{lemma:variance_eigenvalue}{}
+\label{lemma:variance_eigenvalue}
 Assume $\overline{\Delta}=0$. Consider the linear map
 \[
 \phi: V\mor \d{R}^{\Delta}:u\fun \bl{\Delta}{u}
