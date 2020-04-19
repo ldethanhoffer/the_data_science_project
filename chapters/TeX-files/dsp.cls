@@ -8,7 +8,7 @@
 
 \usepackage{amsmath,amsthm,amsfonts,amssymb,tikz,scalerel}
 % load calligraphic font
-%\usepackage{mathrsfs}
+\usepackage{mathrsfs}
 \usepackage{marvosym,titlesec}
 
 %for diagrams
@@ -27,8 +27,8 @@
 
 
 %change the default font to bodoni
-%\usepackage[default]{gfsbodoni}
-%\usepackage[T1]{fontenc}
+\usepackage[default]{gfsbodoni}
+\usepackage[T1]{fontenc}
 
 % Declare calligraphic font:
 %\DeclareMathAlphabet{\pr}{OMS}{zplm}{m}{n}
