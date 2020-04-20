@@ -323,25 +323,25 @@ f^+ = (f^*\circ f)^{-1}\circ f^*
 \subsection{the Principal component basis}
 \label{subsection:pc_basis}
 
-Throughout this section $V$ will denote a fd. Euclidean space with inner product $\bl{-}{-}$. We will also consider a finite subset $\Delta\subset V$of \emph{data}. The goal of this section is to exhibit an orthonormal basis for $V$ which is fits the data \emph{suitably}. We begin by defining the principal components of $\Delta$, a specific choice of lines  which span an orthonormal basis particularly compatible with $\Delta$.\\
-To make our exposition clearer, we introduce the notation $\bl{\Delta}{u}\define \{\bl{x}{u}\}_{x\in \Delta}\in \d{R}^\Delta$. Recall from Probability (TODO) that $\Delta$ defines the random variable $1_\Delta: V\mor \d{R}$ whose pushforward probability is the sample probability on $\d{R}$. Moreover, we can also consider the following random variable
+Throughout this section $V$ will denote a fd. Euclidean space with inner product $\bl{-}{-}$. We will also consider a finite subset $\Delta\subset V$of \emph{data}. The goal of this section is to exhibit an orthonormal basis for $V$ which fits the data in a \emph{suitable} way. To this end, we will define the so-called \emph{the principal components of $\Delta$}, a specific choice of lines which span an orthonormal basis that in a way is \emph{closest} to $\Delta$.\\
+To make our exposition clearer, we first introduce a bit of notation: $\bl{\Delta}{u}\define \{\bl{x}{u}\}_{x\in \Delta}\in \d{R}^\Delta$. Now, recall from Probability (ref: TODO) that $\Delta$ defines the random variable $1_\Delta: V\mor \d{R}$ whose pushforward probability is the \emph{sample probability on $\d{R}$}. Moreover, given $u \in V$, we can also consider the following random variable
 \[
-X_u\define V\mor \d{R}: x:\fun \bl{x}{y}\cdot1_\Delta
+X_u\define V\mor \d{R}: x:\fun \bl{x}{u}\cdot1_\Delta,
 \]
-Whose pushforward probability is the explained probability. More generally, we will prefix the diferent probabilistic concepts pertaining to this RV with the word $\emph{explained}$.\\ 
+whose pushforward probability is called the \emph{explained probability}. More generally, we will prefix the diferent probabilistic concepts pertaining to this RV with the word $\emph{explained}$.\\ 
 We begin by constructing the first principal component, whose existence is guaranteed by the following theorem:
 
 \begin{theorem}
 \label{theorem:principal_component}
-Let $\overline{\Delta}= \frac{1}{\vert \Delta\vert}\sum_{x\in \Delta} x$ and let $L$ be the set of lines through $\overline{\Delta}$ in $V$. Then there is a unique line $\ell \in L$ minimizing
+Let $\overline{\Delta}= \frac{1}{\vert \Delta\vert}\sum_{x\in \Delta} x$ be the sample mean and let $L$ be the set of lines through $\overline{\Delta}$ in $V$. Then there is a unique line $\ell \in L$ minimizing
 \[
 \sum_{x \in \Delta} \vert\vert x-\pi_\ell(x) \vert\vert^2
 \]
 Moreover, if we write $\ell=\overline{\Delta}+\d{R}u$ with $\vert \vert u\vert \vert =1$, then the above three quantities coincide:
 \begin{itemize}
-\item $\sum_{x \in \Delta} \vert\vert x-\pi_\ell(x) \vert\vert^2$
-\item the explained variance of $X_u$
-\item The largest eigenvalue of $M^t\cdot M$ where $\phi: V\mor \d{R}^\Delta$ is given by $\phi(u)=\bl{\Delta}{u}$ 
+\item The $L^2$-distance between $\Delta$ and $\pi_u(\Delta)$ given by $\sum_{x \in \Delta} \vert\vert x-\pi_\ell(x) \vert\vert^2$
+\item the explained variance of the random variable $X_u$ given by $\frac{1}{\vert \Delta \vert}\sum_{x \in \Delta} \big(\bl{x}{u}- \bl{\overline{\Delta}}{u}\big)^2$
+\item The largest eigenvalue of the endomorphism $\phi^t\circ \phi$ where $\phi: V\mor \d{R}^\Delta$ is given by $\phi(u)=\bl{\Delta}{u}$ 
 \end{itemize}
 \end{theorem}
 
@@ -349,25 +349,25 @@ Moreover, if we write $\ell=\overline{\Delta}+\d{R}u$ with $\vert \vert u\vert \
 \label{definition:principal_component}
 The principal component of $\Delta$ is the line $\ell \in L$ defined in the above theorem
 \end{definition}
-
+We will prove Theorem \ref{theorem:principal_component} by using the following lemma:
 \begin{lemma}
 \label{lemma:mse_variance}
 Let $\ell = \d{R}u$ where $\vert \vert u\vert \vert=1$. Then the following are equivalent:
 \begin{itemize}
-\item The mean square error $\sum_{x \in \Delta} \vert\vert x- \pi_\ell(x)\vert\vert^2$ is minimal
+\item The quantitiy $\sum_{x \in \Delta} \vert\vert x- \pi_\ell(x)\vert\vert^2$ is minimal
 \item  $\sum_{x \in \Delta} \bl{x}{u}^2$ is minimal
-\end{itemize}\subsection{Application: Dimension Reduction}
+\end{itemize}
 \end{lemma}
 
 \begin{proof}
 This is an easy exercise in bilinear forms
 \end{proof}
 
-\begin{remark}
-\label{remark:explained_variance}
-Note that if $\overline{\Delta}=0$ (an assumption commonly made in ML), then the latter quantity is the \emph{explained variance} of $\Delta$ in our terminology.
-\end{remark}
-For the next lemma we recall that the spectral theorem tells us that a symmetric endomorphism always has basis of eigenvectors which can be chosen to be orthonormal.
+For the next lemma we recall the following classical result
+\begin{theorem}[spectral Theorem]
+\label{theorem:spectral}
+Let $\r{L}: V\mor V \in \End(V)$ and assume that $\r{L}$ is symmetric. Then $\r{L}$ has an orthonormal basis of eigenvectors
+\end{theorem}
 
 \begin{lemma}
 \label{lemma:variance_eigenvalue}
@@ -375,11 +375,11 @@ Assume $\overline{\Delta}=0$. Consider the linear map
 \[
 \phi: V\mor \d{R}^{\Delta}:u\fun \bl{\Delta}{u}
 \]
-Let $u_1,\ldots u_n$ be an orthormal basis of eigenvectors for $\phi^t\circ \phi \in \End_\d{R}(V)$.
+Let $u_1,\ldots u_n$ be an orthormal basis of eigenvectors for the symmetric endomorphism $\phi^t\circ \phi \in \End_\d{R}(V)$.
 Then
 \begin{itemize}
 \item The eigenvalue for $u_i$ is $\lambda_i \define \sum_{x\in \Delta}\bl{x}{u_i}$
-\item $\sup_{u\in B(0,1)} \sum_{x\in\Delta}\bl{x}{u}=\max_i \{\lambda_i\}$
+\item $\sup_{u\in B(0,1)} \sum_{x\in\Delta}\bl{x}{u}^2=\max_i \{\lambda_i\}$
 \end{itemize}
 \end{lemma}
 
@@ -399,13 +399,16 @@ In particular if $u=u_i$, we obtain the first claim. To prove the second, we ass
 \]
 And this value indeed gets reached by $u_n$
 \end{proof}
-{}{}
+
 \begin{proof}[proof of Theorem \ref{theorem:principal_component}]
 First we claim that wlog we can assume that $\overline{\Delta}=0$. Indeed\\
 Next, by Lemma \ref{lemma:mse_variance}, we need to maximize the explained variance $\sum_{x\in\Delta}\bl{x}{u}^2$ which by lemma \ref{lemma:variance_eigenvalue} {}coincides with the largest eigenvalue. The line $\ell$ is now spanned by any corresponding eigenvector.
 \end{proof}
 
-Since the endomorphism $\r{L}\define \phi^t\circ \phi$ plays a crucial role in our discussion, we give a more explicit description:
+Since the endomorphism $\r{L}\define \phi^t\circ \phi$ plays a crucial role in our discussion, we give a more explicit description.
+
+\subsection{Introducting coordinates}
+\label{subsubsection:introducing_coordinates}
 
 \begin{lemma}
 The map $\r{L}^t: \d{R}^n\mor \d{R}^n$ is given by the matrix whose $(i,j)$-component is $\bl{x_i}{u_j}$.
@@ -418,24 +421,6 @@ Let $M$ be said matrix. Then the $j$-th column is given by $M \cdot e_j$ (where 
 \begin{definition}
 \label{definition:principal_component_basis}
 the principal component basis of $\Delta$ is the orthonomormal basis of eigenvectors for the map $\r{L}$.
-\end{definition}
-
-\subsection{Application: Dimension Reduction}
-\label{subsection:application-dimension_reduction}
-
-
-One can use PCA to find a way to reduce the dimension of the dataspace:
-
-
-
-\begin{definition}
-\label{definition:pc_dimension_reduction}
-The reduction of order $n$ of the dataset $\Delta \subset V$ is the image of the map
-\end{definition}
-
-\begin{definition}
-\label{definition:pc_recontruction}
-The pc reconstruction of order $n$ of the dataset $\Delta$ is 
 \end{definition}
 
 
