@@ -400,31 +400,28 @@ In particular if $u=u_i$, we obtain the first claim. To prove the second, we ass
 And this value indeed gets reached by $u_n$
 \end{proof}
 
+
 \begin{proof}[proof of Theorem \ref{theorem:principal_component}]
-First we claim that wlog we can assume that $\overline{\Delta}=0$. Indeed\\
-Next, by Lemma \ref{lemma:mse_variance}, we need to maximize the explained variance $\sum_{x\in\Delta}\bl{x}{u}^2$ which by lemma \ref{lemma:variance_eigenvalue} {}coincides with the largest eigenvalue. The line $\ell$ is now spanned by any corresponding eigenvector.
+(TODO) First we note that wlog we can assume that $\overline{\Delta}=0$.\\
+Next, by Lemma \ref{lemma:mse_variance}, we need to maximize the explained variance of $X_u$ given by  $\sum_{x\in\Delta}\bl{x}{u}^2$ which by lemma \ref{lemma:variance_eigenvalue} coincides with the largest eigenvalue $\lambda_n$ of the endomorphism $\phi^t\circ \phi$. The line $\ell$ is now spanned by any corresponding eigenvector.
 \end{proof}
 
-Since the endomorphism $\r{L}\define \phi^t\circ \phi$ plays a crucial role in our discussion, we give a more explicit description.
+We end our discussion of give a more explicit description.
+
 
 \subsection{Introducting coordinates}
 \label{subsubsection:introducing_coordinates}
 
+For the remainder of this section we choose an orthonormal basis $\r{B}\define(v^1,\ldots, v^d)$ for $V$. and let $\underline{u}$ denote the coordinates of any vector $u$ wrt this basis.\\
+
 \begin{lemma}
-The map $\r{L}^t: \d{R}^n\mor \d{R}^n$ is given by the matrix whose $(i,j)$-component is $\bl{x_i}{u_j}$.
+\label{lemma:matrix_of_phi}
+The matrix $M$ of $\phi: V\mor \d{R}^\Delta$ wrt to $\r{B}$ is given by $M_{ij} = (\underline{v}^i)_j$ (ie the $j^\text{th}$ component of the vector $u^i \in \d{R}^d$)
 \end{lemma}
 
 \begin{proof}
-Let $M$ be said matrix. Then the $j$-th column is given by $M \cdot e_j$ (where $e_j$ is of course the $j^\textsuperscript{th}$ standard basisvector for $\d{R}^n$). 	
+
 \end{proof}
-
-\begin{definition}
-\label{definition:principal_component_basis}
-the principal component basis of $\Delta$ is the orthonomormal basis of eigenvectors for the map $\r{L}$.
-\end{definition}
-
-
-
 
 
 \end{document}
